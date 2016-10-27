@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>blog</title>
-    <link>agchen28.github.io/tags/go/index.xml</link>
+    <link>http://agchen28.github.io/tags/go/index.xml</link>
     <description>Recent content on blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <atom:link href="agchen28.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://agchen28.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>first</title>
-      <link>/agchen28.github.io/blog/2016/10/27/first/</link>
+      <link>http://agchen28.github.io/blog/2016/10/27/first/</link>
       <pubDate>Thu, 27 Oct 2016 15:24:20 +0800</pubDate>
       
-      <guid>/agchen28.github.io/blog/2016/10/27/first/</guid>
+      <guid>http://agchen28.github.io/blog/2016/10/27/first/</guid>
       <description>
 
 &lt;h3 id=&#34;hello-hugo&#34;&gt;Hello Hugo&lt;/h3&gt;
