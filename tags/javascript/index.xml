@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javascript on agchen</title>
+    <link>https://agchen28.github.io/tags/javascript/</link>
+    <description>Recent content in Javascript on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 21 Mar 2017 08:50:12 +0800</lastBuildDate>
+    
+	<atom:link href="https://agchen28.github.io/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>JavaScript中的function</title>
+      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</link>
+      <pubDate>Tue, 21 Mar 2017 08:50:12 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</guid>
+      <description>JavaScript设计得最出色的就是它的函数的实现。它几乎近于完美。&amp;ndash;Douglas Crockford
+第一类值（first-class values） JavaScript中的函数就是对象。
+可以使用对象的地方都可以使用函数。
+比如可以赋值给变量，保存在其他对象中，可以作为函数的参数或者作为函数的返回值。
+函数跟其他对象不一样的地方在于可以在它后面加个括号调用它。
+据我了解，函数作为第一类值的语言还有Go，Lua。这种设计使得函数使用起来非常灵活。
+C#中实现方法的传递 方法与函数的区别以我的理解来说，方法是面向对象中对于函数的说法，当一个函数属于一个对象，该函数就称为该对象的方法。
+由于C#和Java属于完全面向对象编程语言，所有的函数都是某个对象的方法，即使静态方法也是属于某个类型对象的方法。
+所谓编程，就是将一组需求分解成一组函数和数据结构的技能。
+那么所谓面向对象编程，就是将一组需求分解成一组对象，对象中就包含与本身相关的数据和用来操作数据的方法。
+C#中通过委托（delegate）来实现类似的操作。
+委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
+调用  方法调用模式
+当一个函数属于一个对象时，我们通过使用该对象的点操作符来调用该函数，这种调用方式就是方法调用模式。
+方法内部的this会被绑定到该对象，这个绑定是在调用的时候发生。
+var myObject = { value: 0, incrament: function (inc) { this.value += typeof inc === &#39;number&#39; ? inc : 1; } }; myObject.increment(); document.writeln(myObject.value);//1 myObject.increment(2); document.writeln(myObject.value);//3  函数调用模式
+当一个函数并非一个对象的属性时，那么它就是被当作一个函数来调用。
+此模式调用函数时，this被绑定到全局对象。这是语言设计上的一个错误。倘若语言设计正确，那么当内部函数被调用时，this应该仍然绑定到外部函数的this变量。（Douglas Crockford大神的原话）
+看解决方案：
+//给myObject增加一个double方法。 myObject.double = function () { var that = this; var helper = function () { that.</description>
+    </item>
+    
+    <item>
+      <title>JavaScript中的对象</title>
+      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Tue, 21 Feb 2017 09:34:12 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</guid>
+      <description>在JavaScript中，数组是对象，函数是对象，正则表达式是对象，当然，对象自然也是对象。
+JavaScript里的对象是无类型（class-free）的。它对新属性的名字和属性的值没有限制。
+原型（prototype）  原型对象
+每个对象都链接到一个原型对象，并且它可以从中继承属性（听起来是不是像CLR中的类型对象）。所有通过对象字面量创建的对象都连接到Object.prototype,它是JavaScript中的标配对象。
+原型链接在更新时是不起作用的。当我们对某个对象做出改变时，不会触及改对象的原型。
+原型链接只有在检索值的时候才被用到。如果我们尝试去获取对象的某个属性值，但该对象没有此属性名，那么JavaScript会试着从原型对象中获取属性值。如果那个原型对象也没有该属性，那么再从它的原型中找，依次类推，知道该过程最后到达终点Object.prototype。如果想要的属性完全不存在于原型链中，那么结果就是undefined值。
+原型关系是一种动态的关系。如果我们添加一个新的属性到原型中，该属性会立即对所有基于该原型创建的对象可见。  //这种继承方式被称作原型式继承 //通过修改对象的原型对象来实现 if (typeof Object.create !== &#39;function&#39;) { Object.create = function (o) { var F = function () { }; F.prototype = o; return new F(); }; } var another_stooge = Object.create(stooge);   构造函数、原型对象与实例对象之间的关系  function SuperType() { this.property = true; } SuperType.prototype.getSuperValue = function () { return this.property; }; function SubType() { this.subproperty = false; } //继承了SuperType SubType.</description>
+    </item>
+    
+  </channel>
+</rss>

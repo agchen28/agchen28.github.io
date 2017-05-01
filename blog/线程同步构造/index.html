@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>线程同步构造 - agchen</title>
+    
+<meta name="description" content="这个主题涉及内容太多，只能先简单介绍一下。线程同步构造就是我们俗话说的锁。锁的作用就是确保一次只有一个线程访问资源。为什么需要锁呢？多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。基元线程同步构造 基元指可以在代码中使用的最简单构造。有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。用户模式构造 应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。特点：使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。这些CPU指令只阻塞线程相当短的时间。缺点：想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。有两种基元用户模式线程同步构造： 易变构造（volatile construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。 互锁构造（interlocked construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。  内核模式构造 内核模式构造比用户模式构造慢得多，需要操作系统的配合。优点：操作系统知道一个线程是否在内核模式构造上阻塞了。可以实现本机和托管线程相互之间的同步。可以同步一个机器的不同进程中的线程。混合线程同步构造 所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。">
+
+<meta property="og:title" content="线程同步构造 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="这个主题涉及内容太多，只能先简单介绍一下。线程同步构造就是我们俗话说的锁。锁的作用就是确保一次只有一个线程访问资源。为什么需要锁呢？多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。基元线程同步构造 基元指可以在代码中使用的最简单构造。有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。用户模式构造 应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。特点：使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。这些CPU指令只阻塞线程相当短的时间。缺点：想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。有两种基元用户模式线程同步构造： 易变构造（volatile construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。 互锁构造（interlocked construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。  内核模式构造 内核模式构造比用户模式构造慢得多，需要操作系统的配合。优点：操作系统知道一个线程是否在内核模式构造上阻塞了。可以实现本机和托管线程相互之间的同步。可以同步一个机器的不同进程中的线程。混合线程同步构造 所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/">
+<meta name="twitter:title" content="线程同步构造 - agchen">
+<meta name="twitter:description" content="这个主题涉及内容太多，只能先简单介绍一下。线程同步构造就是我们俗话说的锁。锁的作用就是确保一次只有一个线程访问资源。为什么需要锁呢？多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。基元线程同步构造 基元指可以在代码中使用的最简单构造。有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。用户模式构造 应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。特点：使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。这些CPU指令只阻塞线程相当短的时间。缺点：想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。有两种基元用户模式线程同步构造： 易变构造（volatile construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。 互锁构造（interlocked construct）在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。  内核模式构造 内核模式构造比用户模式构造慢得多，需要操作系统的配合。优点：操作系统知道一个线程是否在内核模式构造上阻塞了。可以实现本机和托管线程相互之间的同步。可以同步一个机器的不同进程中的线程。混合线程同步构造 所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "线程同步构造 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-01-25T11:13:00JST",
+    "dateModified": "2017-01-25T11:13:00JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "这个主题涉及内容太多，只能先简单介绍一下。
+线程同步构造就是我们俗话说的锁。
+锁的作用就是确保一次只有一个线程访问资源。
+为什么需要锁呢？
+多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。
+锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。
+基元线程同步构造 基元指可以在代码中使用的最简单构造。
+有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。
+用户模式构造 应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。
+特点：
+使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。
+这些CPU指令只阻塞线程相当短的时间。
+缺点：
+想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。
+有两种基元用户模式线程同步构造：
+ 易变构造（volatile construct）
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。
+ 互锁构造（interlocked construct）
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。
+  内核模式构造 内核模式构造比用户模式构造慢得多，需要操作系统的配合。
+优点：
+操作系统知道一个线程是否在内核模式构造上阻塞了。
+可以实现本机和托管线程相互之间的同步。
+可以同步一个机器的不同进程中的线程。
+混合线程同步构造 所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。
+混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。
+这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。"
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">线程同步构造</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-01-25T11:13:00JST">2017年01月25日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">线程同步构造</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>这个主题涉及内容太多，只能先简单介绍一下。<br />
+线程同步构造就是我们俗话说的锁。<br />
+锁的作用就是确保一次只有一个线程访问资源。<br />
+为什么需要锁呢？<br />
+多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。<br />
+锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。</p>
+
+<h2 id="基元线程同步构造">基元线程同步构造</h2>
+
+<p>基元指可以在代码中使用的最简单构造。<br />
+有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。</p>
+
+<h3 id="用户模式构造">用户模式构造</h3>
+
+<p>应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。<br />
+特点：<br />
+使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。<br />
+这些CPU指令只阻塞线程相当短的时间。<br />
+缺点：<br />
+想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。</p>
+
+<p>有两种基元用户模式线程同步构造：</p>
+
+<ul>
+<li><p>易变构造（volatile construct）<br />
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。</p></li>
+
+<li><p>互锁构造（interlocked construct）<br />
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。</p></li>
+</ul>
+
+<h3 id="内核模式构造">内核模式构造</h3>
+
+<p>内核模式构造比用户模式构造慢得多，需要操作系统的配合。<br />
+优点：<br />
+操作系统知道一个线程是否在内核模式构造上阻塞了。<br />
+可以实现本机和托管线程相互之间的同步。<br />
+可以同步一个机器的不同进程中的线程。</p>
+
+<h2 id="混合线程同步构造">混合线程同步构造</h2>
+
+<p>所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。<br />
+混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。<br />
+这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on agchen</title>
+    <link>https://agchen28.github.io/categories/</link>
+    <description>Recent content in Categories on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    
+	<atom:link href="https://agchen28.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>其他</title>
+      <link>https://agchen28.github.io/categories/%E5%85%B6%E4%BB%96/</link>
+      <pubDate>Sat, 31 Dec 2016 19:14:39 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/categories/%E5%85%B6%E4%BB%96/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>技术相关</title>
+      <link>https://agchen28.github.io/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/</link>
+      <pubDate>Thu, 27 Apr 2017 11:33:01 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>捡垃圾</title>
+      <link>https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/</link>
+      <pubDate>Tue, 29 Nov 2016 22:37:30 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

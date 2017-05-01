@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/lock/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>lock - agchen</title>
+    
+<meta name="description" content="说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。Monitor只是FCL中提供的混合线程同步构造中的其中一个。Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。使用方法 贴一段单例的代码：public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor.">
+
+<meta property="og:title" content="lock - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/lock/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。Monitor只是FCL中提供的混合线程同步构造中的其中一个。Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。使用方法 贴一段单例的代码：public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor.">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/lock/">
+<meta name="twitter:title" content="lock - agchen">
+<meta name="twitter:description" content="说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。Monitor只是FCL中提供的混合线程同步构造中的其中一个。Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。使用方法 贴一段单例的代码：public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor.">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "lock - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-01-28T16:24:53JST",
+    "dateModified": "2017-01-28T16:24:53JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。
+Monitor只是FCL中提供的混合线程同步构造中的其中一个。
+Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。
+使用方法 贴一段单例的代码：
+public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：
+Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor."
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">lock</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-01-28T16:24:53JST">2017年01月28日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">lock</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。<br />
+Monitor只是FCL中提供的混合线程同步构造中的其中一个。<br />
+Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。</p>
+
+<h3 id="使用方法">使用方法</h3>
+
+<p>贴一段单例的代码：</p>
+
+<pre><code class="language-csharp">    public sealed class Singleton
+    {
+        private static Object s_lock = new Object();
+        private static Singleton uniqueInstance;
+
+        private Singleton() 
+        {
+        }
+        
+        public static Singleton GetSingleton()
+        {
+            if (uniqueInstance == null)
+            {
+                //保证同时只有一个线程执行以下代码块
+                lock (s_lock)
+                {
+                    if (uniqueInstance == null)
+                        uniqueInstance = new Singleton();
+                }
+            }
+            return uniqueInstance;
+        }
+    }
+</code></pre>
+
+<p>C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：</p>
+
+<pre><code class="language-csharp">    Boolean lockTaken = false;
+    try {
+        Monitor.Enter(s_lock, ref lockTaken);
+        if (uniqueInstance == null)
+            uniqueInstance = new Singleton();
+    }finally{
+        if (lockTaken) Monitor.Exit(s_lock);
+    }
+</code></pre>
+
+<h3 id="实现方式">实现方式</h3>
+
+<p>当一个对象在堆中被创建的时候，都会有两个额外的开销字段：类型对象指针和同步块索引。<br />
+这个同步块索引就是提供给Monitor的。<br />
+每个堆上的对象都要为它预留一个字段，而且它还拥有自己的专属关键字，由此可见，Monitor的地位真的不一般。</p>
+
+<h4 id="工作原理">工作原理</h4>
+
+<p>CLR初始化时，在堆中分配一个同步块数组。<br />
+一个对象在构造时，它的同步块索引初始化为-1，表示不引用任何同步块。<br />
+调用Monitor.Enter时，对象的同步块索引会引用到同步块数组中的一个空白同步块。<br />
+调用Monitor.Exit时，检查是否有其他线程正在等待该同步块，如果没有，同步块就自由了，原先对象的同步块索引重新设为-1。<br />
+同步块数组能创建更多的同步块，所以同时同步大量对象时，不必担心系统会用光同步块。<br />
+<img src="/imgs/lock/lock.png" width = "1000" height = "620" align=center /></p>
+
+<h3 id="需要注意">需要注意</h3>
+
+<ul>
+<li><p>建议永远不要给Monitor.Enter方法传递类型对象。</p></li>
+
+<li><p>避免锁String对象，因为字符串是可留用的。</p></li>
+
+<li><p>禁止传递值类型，因为值类型会在堆上被装箱成新的对象，造成每次都是锁不同的对象。</p></li>
+</ul>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

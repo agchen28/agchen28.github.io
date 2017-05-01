@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>Zookeeper集群搭建 - agchen</title>
+    
+<meta name="description" content="Zookeeper是一个分布式协调服务。准备 三台Linux服务器：192.168.142.200 linux01192.168.142.201 linux02192.168.142.202 linux03安装JDK yum list java* yum -y install java-1.8.0-openjdk*  下载Zookeeper解压 cd /opt/zookeeper/ wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz tar -zxvf zookeeper-3.4.6.tar.gz  修改配置文件 cp zoo_sample.cfg zoo.cfg  需要修改的配置项：tickTime=2000 initLimit=10 syncLimit=5 dataDir=/opt/zookeeper/data clientPort=2181 server.1=192.168.142.200:2888:3888 server.2=192.168.142.201:2888:3888 server.3=192.168.142.202:2888:3888 #server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里 #第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888  创建myid文件 #server1 echo &amp;quot;1&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server2 echo &amp;quot;2&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server3 echo &amp;quot;3&amp;quot; &amp;gt; /opt/zookeeper/data/myid  启动服务 ./zkServer.sh start #启动服务（3台都需要操作） ./zkServer.sh status #检查服务器状态 jps #jps(Java Virtual Machine Process Status Tool)是JDK 1.">
+
+<meta property="og:title" content="Zookeeper集群搭建 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="Zookeeper是一个分布式协调服务。准备 三台Linux服务器：192.168.142.200 linux01192.168.142.201 linux02192.168.142.202 linux03安装JDK yum list java* yum -y install java-1.8.0-openjdk*  下载Zookeeper解压 cd /opt/zookeeper/ wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz tar -zxvf zookeeper-3.4.6.tar.gz  修改配置文件 cp zoo_sample.cfg zoo.cfg  需要修改的配置项：tickTime=2000 initLimit=10 syncLimit=5 dataDir=/opt/zookeeper/data clientPort=2181 server.1=192.168.142.200:2888:3888 server.2=192.168.142.201:2888:3888 server.3=192.168.142.202:2888:3888 #server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里 #第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888  创建myid文件 #server1 echo &amp;quot;1&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server2 echo &amp;quot;2&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server3 echo &amp;quot;3&amp;quot; &amp;gt; /opt/zookeeper/data/myid  启动服务 ./zkServer.sh start #启动服务（3台都需要操作） ./zkServer.sh status #检查服务器状态 jps #jps(Java Virtual Machine Process Status Tool)是JDK 1.">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">
+<meta name="twitter:title" content="Zookeeper集群搭建 - agchen">
+<meta name="twitter:description" content="Zookeeper是一个分布式协调服务。准备 三台Linux服务器：192.168.142.200 linux01192.168.142.201 linux02192.168.142.202 linux03安装JDK yum list java* yum -y install java-1.8.0-openjdk*  下载Zookeeper解压 cd /opt/zookeeper/ wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz tar -zxvf zookeeper-3.4.6.tar.gz  修改配置文件 cp zoo_sample.cfg zoo.cfg  需要修改的配置项：tickTime=2000 initLimit=10 syncLimit=5 dataDir=/opt/zookeeper/data clientPort=2181 server.1=192.168.142.200:2888:3888 server.2=192.168.142.201:2888:3888 server.3=192.168.142.202:2888:3888 #server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里 #第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888  创建myid文件 #server1 echo &amp;quot;1&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server2 echo &amp;quot;2&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server3 echo &amp;quot;3&amp;quot; &amp;gt; /opt/zookeeper/data/myid  启动服务 ./zkServer.sh start #启动服务（3台都需要操作） ./zkServer.sh status #检查服务器状态 jps #jps(Java Virtual Machine Process Status Tool)是JDK 1.">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "Zookeeper集群搭建 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-01-28T22:28:31JST",
+    "dateModified": "2017-01-28T22:28:31JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "Zookeeper是一个分布式协调服务。
+准备 三台Linux服务器：
+192.168.142.200 linux01
+192.168.142.201 linux02
+192.168.142.202 linux03
+安装JDK yum list java* yum -y install java-1.8.0-openjdk*  下载Zookeeper解压 cd /opt/zookeeper/ wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz tar -zxvf zookeeper-3.4.6.tar.gz  修改配置文件 cp zoo_sample.cfg zoo.cfg  需要修改的配置项：
+tickTime=2000 initLimit=10 syncLimit=5 dataDir=/opt/zookeeper/data clientPort=2181 server.1=192.168.142.200:2888:3888 server.2=192.168.142.201:2888:3888 server.3=192.168.142.202:2888:3888 #server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里 #第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888  创建myid文件 #server1 echo &quot;1&quot; &gt; /opt/zookeeper/data/myid #server2 echo &quot;2&quot; &gt; /opt/zookeeper/data/myid #server3 echo &quot;3&quot; &gt; /opt/zookeeper/data/myid  启动服务 ./zkServer.sh start #启动服务（3台都需要操作） ./zkServer.sh status #检查服务器状态 jps #jps(Java Virtual Machine Process Status Tool)是JDK 1."
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">Zookeeper集群搭建</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-01-28T22:28:31JST">2017年01月28日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">Zookeeper集群搭建</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>Zookeeper是一个分布式协调服务。</p>
+
+<h3 id="准备">准备</h3>
+
+<p>三台Linux服务器：<br />
+192.168.142.200 linux01<br />
+192.168.142.201 linux02<br />
+192.168.142.202 linux03</p>
+
+<h3 id="安装jdk">安装JDK</h3>
+
+<pre><code>yum list java*
+yum -y install java-1.8.0-openjdk*
+</code></pre>
+
+<h3 id="下载zookeeper解压">下载Zookeeper解压</h3>
+
+<pre><code>cd /opt/zookeeper/
+wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+tar -zxvf zookeeper-3.4.6.tar.gz
+</code></pre>
+
+<h3 id="修改配置文件">修改配置文件</h3>
+
+<pre><code>cp zoo_sample.cfg zoo.cfg
+</code></pre>
+
+<p>需要修改的配置项：</p>
+
+<pre><code>tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/opt/zookeeper/data
+clientPort=2181
+server.1=192.168.142.200:2888:3888
+server.2=192.168.142.201:2888:3888
+server.3=192.168.142.202:2888:3888
+#server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里
+#第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888
+</code></pre>
+
+<h3 id="创建myid文件">创建myid文件</h3>
+
+<pre><code>#server1
+echo &quot;1&quot; &gt; /opt/zookeeper/data/myid
+#server2
+echo &quot;2&quot; &gt; /opt/zookeeper/data/myid
+#server3
+echo &quot;3&quot; &gt; /opt/zookeeper/data/myid
+</code></pre>
+
+<h3 id="启动服务">启动服务</h3>
+
+<pre><code>./zkServer.sh start #启动服务（3台都需要操作）
+./zkServer.sh status    #检查服务器状态
+jps #jps(Java Virtual Machine Process Status Tool)是JDK 1.5提供的一个显示当前所有java进程pid的命令
+</code></pre>
+
+<h3 id="设置开机启动">设置开机启动</h3>
+
+<pre><code>cd /etc/rc.d/init.d/
+touch zookeeper #创建一个空文件
+chmod +x zookeeper  #添加可执行权限
+chkconfig --add zookeeper   #把zookeeper添加到开机启动
+chkconfig --list    #列出所有的系统服务
+service zookeeper start/stop    #启动或停止zookeeper服务
+</code></pre>
+
+<p>zookeeper文件内容：</p>
+
+<pre><code>#!/bin/bash
+#chkconfig:2345 20 90
+#description:zookeeper
+#processname:zookeeper
+
+ZOOKEEPER_PATH=/opt/zookeeper/zookeeper-3.4.6/bin/
+
+case $1 in
+          start) su root ${ZOOKEEPER_PATH}/zkServer.sh start;;
+          stop) su root ${ZOOKEEPER_PATH}/zkServer.sh stop;;
+          status) su root ${ZOOKEEPER_PATH}/zkServer.sh status;;
+          restart) su root ${ZOOKEEPER_PATH}/zkServer.sh restart;;
+          *)  echo &quot;require start|stop|status|restart&quot;  ;;
+esac
+</code></pre>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

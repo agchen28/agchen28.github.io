@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>Storm中Topology的执行过程 - agchen</title>
+    
+<meta name="description" content="Topology运行流程 (1)Storm提交后，会把代码首先存放到Nimbus节点的inbox目录下，之后，会把当前Storm运行的配置生成一个 stormconf.ser文件放到Nimbus节点的stormdist目录中，在此目录中同时还有序列化之后的Topology代码文件 (2) 在设定Topology所关联的Spouts和Bolts时，可以同时设置当前Spout和Bolt的executor数目和task数目，默认情况下， 一个Topology的task的总和是和executor的总和一致的。之后，系统根据worker的数目，尽量平均的分配这些task的执行。 worker在哪个supervisor节点上运行是由storm本身决定的 (3)任务分配好之后，Nimbus节点会将任务的信息提交到zookeeper集群，同时在zookeeper集群中会有workerbeats节点，这里存储了当前Topology的所有worker进程的心跳信息 (4)Supervisor 节点会不断的轮询zookeeper集群，在zookeeper的assignments节点中保存了所有Topology的任务分配信息、代码存储目 录、任务之间的关联关系等，Supervisor通过轮询此节点的内容，来领取自己的任务，启动worker进程运行 (5)一个Topology运行之后，就会不断的通过Spouts来发送Stream流，通过Bolts来不断的处理接收到的Stream流，Stream流是无界的。 最后一步会不间断的执行，除非手动结束Topology。">
+
+<meta property="og:title" content="Storm中Topology的执行过程 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="Topology运行流程 (1)Storm提交后，会把代码首先存放到Nimbus节点的inbox目录下，之后，会把当前Storm运行的配置生成一个 stormconf.ser文件放到Nimbus节点的stormdist目录中，在此目录中同时还有序列化之后的Topology代码文件 (2) 在设定Topology所关联的Spouts和Bolts时，可以同时设置当前Spout和Bolt的executor数目和task数目，默认情况下， 一个Topology的task的总和是和executor的总和一致的。之后，系统根据worker的数目，尽量平均的分配这些task的执行。 worker在哪个supervisor节点上运行是由storm本身决定的 (3)任务分配好之后，Nimbus节点会将任务的信息提交到zookeeper集群，同时在zookeeper集群中会有workerbeats节点，这里存储了当前Topology的所有worker进程的心跳信息 (4)Supervisor 节点会不断的轮询zookeeper集群，在zookeeper的assignments节点中保存了所有Topology的任务分配信息、代码存储目 录、任务之间的关联关系等，Supervisor通过轮询此节点的内容，来领取自己的任务，启动worker进程运行 (5)一个Topology运行之后，就会不断的通过Spouts来发送Stream流，通过Bolts来不断的处理接收到的Stream流，Stream流是无界的。 最后一步会不间断的执行，除非手动结束Topology。">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/">
+<meta name="twitter:title" content="Storm中Topology的执行过程 - agchen">
+<meta name="twitter:description" content="Topology运行流程 (1)Storm提交后，会把代码首先存放到Nimbus节点的inbox目录下，之后，会把当前Storm运行的配置生成一个 stormconf.ser文件放到Nimbus节点的stormdist目录中，在此目录中同时还有序列化之后的Topology代码文件 (2) 在设定Topology所关联的Spouts和Bolts时，可以同时设置当前Spout和Bolt的executor数目和task数目，默认情况下， 一个Topology的task的总和是和executor的总和一致的。之后，系统根据worker的数目，尽量平均的分配这些task的执行。 worker在哪个supervisor节点上运行是由storm本身决定的 (3)任务分配好之后，Nimbus节点会将任务的信息提交到zookeeper集群，同时在zookeeper集群中会有workerbeats节点，这里存储了当前Topology的所有worker进程的心跳信息 (4)Supervisor 节点会不断的轮询zookeeper集群，在zookeeper的assignments节点中保存了所有Topology的任务分配信息、代码存储目 录、任务之间的关联关系等，Supervisor通过轮询此节点的内容，来领取自己的任务，启动worker进程运行 (5)一个Topology运行之后，就会不断的通过Spouts来发送Stream流，通过Bolts来不断的处理接收到的Stream流，Stream流是无界的。 最后一步会不间断的执行，除非手动结束Topology。">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "Storm中Topology的执行过程 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-03-21T16:11:52JST",
+    "dateModified": "2017-03-21T16:11:52JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "Topology运行流程 (1)Storm提交后，会把代码首先存放到Nimbus节点的inbox目录下，之后，会把当前Storm运行的配置生成一个 stormconf.ser文件放到Nimbus节点的stormdist目录中，在此目录中同时还有序列化之后的Topology代码文件 (2) 在设定Topology所关联的Spouts和Bolts时，可以同时设置当前Spout和Bolt的executor数目和task数目，默认情况下， 一个Topology的task的总和是和executor的总和一致的。之后，系统根据worker的数目，尽量平均的分配这些task的执行。 worker在哪个supervisor节点上运行是由storm本身决定的 (3)任务分配好之后，Nimbus节点会将任务的信息提交到zookeeper集群，同时在zookeeper集群中会有workerbeats节点，这里存储了当前Topology的所有worker进程的心跳信息 (4)Supervisor 节点会不断的轮询zookeeper集群，在zookeeper的assignments节点中保存了所有Topology的任务分配信息、代码存储目 录、任务之间的关联关系等，Supervisor通过轮询此节点的内容，来领取自己的任务，启动worker进程运行 (5)一个Topology运行之后，就会不断的通过Spouts来发送Stream流，通过Bolts来不断的处理接收到的Stream流，Stream流是无界的。 最后一步会不间断的执行，除非手动结束Topology。"
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">Storm中Topology的执行过程</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-03-21T16:11:52JST">2017年03月21日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">Storm中Topology的执行过程</h1>
+  </header>
+
+  
+
+  <div class="article-body"><p>Topology运行流程
+    (1)Storm提交后，会把代码首先存放到Nimbus节点的inbox目录下，之后，会把当前Storm运行的配置生成一个 stormconf.ser文件放到Nimbus节点的stormdist目录中，在此目录中同时还有序列化之后的Topology代码文件
+    (2) 在设定Topology所关联的Spouts和Bolts时，可以同时设置当前Spout和Bolt的executor数目和task数目，默认情况下， 一个Topology的task的总和是和executor的总和一致的。之后，系统根据worker的数目，尽量平均的分配这些task的执行。 worker在哪个supervisor节点上运行是由storm本身决定的
+    (3)任务分配好之后，Nimbus节点会将任务的信息提交到zookeeper集群，同时在zookeeper集群中会有workerbeats节点，这里存储了当前Topology的所有worker进程的心跳信息
+    (4)Supervisor 节点会不断的轮询zookeeper集群，在zookeeper的assignments节点中保存了所有Topology的任务分配信息、代码存储目 录、任务之间的关联关系等，Supervisor通过轮询此节点的内容，来领取自己的任务，启动worker进程运行
+    (5)一个Topology运行之后，就会不断的通过Spouts来发送Stream流，通过Bolts来不断的处理接收到的Stream流，Stream流是无界的。
+    最后一步会不间断的执行，除非手动结束Topology。</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

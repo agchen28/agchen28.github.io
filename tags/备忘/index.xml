@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>备忘 on agchen</title>
+    <link>https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98/</link>
+    <description>Recent content in 备忘 on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 08 Feb 2017 11:05:10 +0800</lastBuildDate>
+    
+	<atom:link href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mongodb安装记录</title>
+      <link>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 08 Feb 2017 11:05:10 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description>下载 https://www.mongodb.com/download-center#community
+选择相应的版本下载
+安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：
+dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod +x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：
+#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.</description>
+    </item>
+    
+    <item>
+      <title>Redis安装记录</title>
+      <link>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 08 Feb 2017 11:04:56 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description> 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。
+mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动
+在启动脚本开头添加如下两行注释以修改其运行级别
+#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  </description>
+    </item>
+    
+    <item>
+      <title>Storm集群搭建</title>
+      <link>https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sat, 04 Feb 2017 23:30:07 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <description>准备  安装java 安装zookeeper  下载  http://storm.apache.org/downloads.html  安装 tar -zxvf apache-storm-1.0.3.tar.gz mkdir data vim conf/storm.yaml #修改配置文件  添加配置项(每行配置前面注意留一个空格)：
+storm.zookeeper.servers: - &amp;quot;192.168.142.200&amp;quot; - &amp;quot;192.168.142.201&amp;quot; - &amp;quot;192.168.142.202&amp;quot; nimbus.host: &amp;quot;192.168.142.200&amp;quot; storm.local.dir: &amp;quot;/opt/storm/data&amp;quot;  启动 nohup bin/storm nimbus &amp;amp; #启动nimbus nohup bin/storm supervisor &amp;amp; #启动supervisor nohup bin/storm ui &amp;amp; #启动UI  访问Storm UI http://192.168.142.200:8080/</description>
+    </item>
+    
+    <item>
+      <title>Kafka集群搭建</title>
+      <link>https://agchen28.github.io/blog/kafka%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sat, 04 Feb 2017 23:19:49 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/kafka%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <description>环境准备  三台Linux服务器：
+192.168.142.200 linux01
+192.168.142.201 linux02
+192.168.142.202 linux03
+ 依赖于Zookeeper，所以需要先安装好Zookeeper  下载解压 wget http://apache.opencas.org/kafka/0.9.0.1/kafka_2.11-0.9.0.1.tgz tar -zxvf kafka_2.11-0.9.0.1.tgz  修改配置文件 #broker.id=0 每台服务器的broker.id都不能相同 log.dirs=/opt/kafka/logs/ #hostname host.name=192.168.142.200 #设置zookeeper的连接端口 zookeeper.connect=192.168.142.200:2181,192.168.142.201:2181,192.168.142.202:2181  启动服务 ./kafka-server-start.sh -daemon ../config/server.properties #检查服务是否启动 jps #创建Topic ./kafka-topics.sh --create --zookeeper 192.168.142.200:2181 --replication-factor 2 --partitions 1 --topic test #创建一个broker，发布者 ./kafka-console-producer.sh --broker-list 192.168.142.200:9092 --topic test #创建一个订阅者 ./kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning #查看topic ./kafka-topics.sh --list --zookeeper localhost:2181  开机启动 touch kafkastart.sh #创建启动脚本 chmod +x kafkastart.</description>
+    </item>
+    
+    <item>
+      <title>Zookeeper集群搭建</title>
+      <link>https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Sat, 28 Jan 2017 22:28:31 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
+      <description>Zookeeper是一个分布式协调服务。
+准备 三台Linux服务器：
+192.168.142.200 linux01
+192.168.142.201 linux02
+192.168.142.202 linux03
+安装JDK yum list java* yum -y install java-1.8.0-openjdk*  下载Zookeeper解压 cd /opt/zookeeper/ wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz tar -zxvf zookeeper-3.4.6.tar.gz  修改配置文件 cp zoo_sample.cfg zoo.cfg  需要修改的配置项：
+tickTime=2000 initLimit=10 syncLimit=5 dataDir=/opt/zookeeper/data clientPort=2181 server.1=192.168.142.200:2888:3888 server.2=192.168.142.201:2888:3888 server.3=192.168.142.202:2888:3888 #server.1 这个1是服务器的标识也可以是其他的数字， 表示这个是第几号服务器，用来标识服务器，这个标识要写到快照目录下面myid文件里 #第一个端口是master和slave之间的通信端口，默认是2888，第二个端口是leader选举的端口，集群刚启动的时候选举或者leader挂掉之后进行新的选举的端口默认是3888  创建myid文件 #server1 echo &amp;quot;1&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server2 echo &amp;quot;2&amp;quot; &amp;gt; /opt/zookeeper/data/myid #server3 echo &amp;quot;3&amp;quot; &amp;gt; /opt/zookeeper/data/myid  启动服务 ./zkServer.sh start #启动服务（3台都需要操作） ./zkServer.sh status #检查服务器状态 jps #jps(Java Virtual Machine Process Status Tool)是JDK 1.</description>
+    </item>
+    
+    <item>
+      <title>虚拟机安装记录</title>
+      <link>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Fri, 27 Jan 2017 21:07:37 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description>本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。
+下载安装文件 官网下载：https://www.centos.org/
+VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成
+安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装
+安装常用工具 yum install vim
+yum install wget
+yum install tree
+yum install lrzsz
+yum install tar
+yum install unzip
+yum install -y gcc g++ gcc-c++ make
+配置IP vim /etc/sysconfig/network-script/ifcfg-eth0
+IPADDR=192.168.91.100
+GATEWAY=192.168.91.2
+NETMASK=255.255.255.0
+BOOTPROTO=static
+设置完ip可以通过xshell连接
+修改hosts文件
+vim /etc/hosts
+192.168.91.100 linux01
+立即生效
+source etc/hosts
+设置dns
+vim /etc/resolf.cnf
+关闭防火墙
+chkconfig iptables off
+service iptables stop</description>
+    </item>
+    
+  </channel>
+</rss>

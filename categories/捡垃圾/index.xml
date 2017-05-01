@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>捡垃圾 on agchen</title>
+    <link>https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/</link>
+    <description>Recent content in 捡垃圾 on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 29 Nov 2016 22:37:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>T6670升级方案</title>
+      <link>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Tue, 29 Nov 2016 22:37:30 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</guid>
+      <description>需求 10年买的笔记本了，U是T6670。
+主要参数：双核，2.2GHz，2M二缓，TDP35W。
+平时使用倒也没有遇到什么瓶颈，主要需求就是闲得蛋疼瞎折腾。
+先上一张鲁大娘。 方案 先看插槽和芯片组，虽然看不太懂，不过插槽类型一定要一样。
+ 同系列升级，省心方便。只看T9系列，可以考虑的有T9900、T9800、T9600等。 这几个除了主频之外都是一样的规格，6M二缓，主频逐级提升，价格也随之提高。 特别是T9900，作为该系列最顶级的U，这么多年过去了居然还敢卖三百块，简直太奸商了。 P9系列，P9700、P9600等。 跟T系列差不多的规格，该系列特点就是低温低功耗，P9600的TDP就25W。 强烈推荐，特别是考虑到功耗和散热问题。 当然同主频的价格就比T系列高得多，这两个到现在也还要一两百。 升四核。Q9000、Q9100、QX9300。 这几个应该是属于传说中的胶水四核，不过好歹也是四核。Q9100和QX9300有12M二缓。缺点高温高功耗。最大的缺点——贵。 四核真的非常诱人不过不确定装上去是否可以用，即使可以用散热估计也吃不消而且还要考虑到功耗的问题。  实施 最后，既贪心又抠门的我还是纠结地选择了主频高价格低的T系列。 咬牙掏了七十几块大洋捡了个T9600。2.8GHz主频，6M二缓，相对之前的提升应该还是挺明显的。 之所以没上T9800和T9900是因为考虑到性价比，不能让奸商得逞。 晒张照。 手上拿的这个就是T9600，下面那块沾满翔的就是老战友T6670。 搞定之后再跑一张鲁大娘。 瞬间秒杀全国百分之九的用户，还带动了其他配件性能的提升。 先来两把实况8爽一爽。
+反馈 平时使用中CPU满载的话温度会偏高，正好冬天来了可以暖手。 看来五块钱一罐的硅脂有点不够用，还得加钱上好一点的。 后悔没上P系列，不过庆幸没上T9900或者升四核。 这下可以再战三年了。</description>
+    </item>
+    
+    <item>
+      <title>771硬改775</title>
+      <link>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</link>
+      <pubDate>Sun, 20 Nov 2016 22:04:15 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</guid>
+      <description> 需求 手上有块G41主板，U是E3400。
+闲来无事，就想体验一把四核的。
+先上一张CPU-Z。
+方案  QX9000系列。这个系列属于传家宝系列，比如QX9770，4核心，3.2GHz的主频，12M二缓。
+这个CPU是该平台的老大，不过都几百年的东西了，居然还要上千块。
+ Q9000系列。例如Q9650，3GHz的主频，也不便宜300+。
+ 771硬改775的CPU。例如E5450，4核心，3GHz的主频，12M二缓。这样的规格居然只要一百来块，绝对性价比。
+不过考虑到电源的问题，我最后选择的是L5430，2.66GHz的主频只要79。平均一个核都不到20块。
+硬改的原理就是771平台的CPU只需要交换两个针脚，再打磨出一个缺口，或者剪掉775主板的防呆设计。就能插在775平台上。
+当然这种技术活不需要自己动手，直接买硬改好的，该土豪的时候还是要土豪一把。万一自己改坏了就操蛋了。
+  主角亮相 拿到手后，不得不佩服垃圾佬的折腾能力。真的是硬硬的改啊。 上机 虽说是胶水四核，不过看着这框框也爽。 </description>
+    </item>
+    
+  </channel>
+</rss>

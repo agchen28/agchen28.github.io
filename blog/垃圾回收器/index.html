@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>垃圾回收器 - agchen</title>
+    
+<meta name="description" content=" 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。这种方式有两个问题：一来需要有两个堆，相当于需要多一倍的空间。二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。分代 CLR和Java中的垃圾回收器都有分代的概念。以CLR中的GC为例，介绍一下代的概念。垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）： 对象越新，生存期越短。 对象越老，生存期越长。 回收堆的一部分，速度快于回收整个堆。  工作原理： CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。  ">
+
+<meta property="og:title" content="垃圾回收器 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content=" 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。这种方式有两个问题：一来需要有两个堆，相当于需要多一倍的空间。二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。分代 CLR和Java中的垃圾回收器都有分代的概念。以CLR中的GC为例，介绍一下代的概念。垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）： 对象越新，生存期越短。 对象越老，生存期越长。 回收堆的一部分，速度快于回收整个堆。  工作原理： CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。  ">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/">
+<meta name="twitter:title" content="垃圾回收器 - agchen">
+<meta name="twitter:description" content=" 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。这种方式有两个问题：一来需要有两个堆，相当于需要多一倍的空间。二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。分代 CLR和Java中的垃圾回收器都有分代的概念。以CLR中的GC为例，介绍一下代的概念。垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）： 对象越新，生存期越短。 对象越老，生存期越长。 回收堆的一部分，速度快于回收整个堆。  工作原理： CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。  ">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "垃圾回收器 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2016-12-25T11:11:42JST",
+    "dateModified": "2016-12-25T11:11:42JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": " 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
+给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。
+这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。
+引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。
+清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。
+这种方式有两个问题：
+一来需要有两个堆，相当于需要多一倍的空间。
+二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。
+标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。
+优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。
+分代 CLR和Java中的垃圾回收器都有分代的概念。
+以CLR中的GC为例，介绍一下代的概念。
+垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）：
+ 对象越新，生存期越短。
+ 对象越老，生存期越长。
+ 回收堆的一部分，速度快于回收整个堆。
+  工作原理：
+ CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。
+ 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。
+ 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。
+ 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。
+ 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。
+  "
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">垃圾回收器</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2016-12-25T11:11:42JST">2016年12月25日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">垃圾回收器</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<h3 id="找到存活的对象">找到存活的对象</h3>
+
+<h4 id="引用计数">引用计数</h4>
+
+<p>这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。<br />
+给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。<br />
+这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。</p>
+
+<h4 id="引用跟踪">引用跟踪</h4>
+
+<p>将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。</p>
+
+<h3 id="清理">清理</h3>
+
+<h4 id="停止-复制-stop-and-copy">停止-复制（stop-and-copy）</h4>
+
+<p>先暂停程序的运行（不属于后台回收模式），将所有存活的对象
+复制到新堆并保持紧凑排列。<br />
+这种方式有两个问题：<br />
+一来需要有两个堆，相当于需要多一倍的空间。<br />
+二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。</p>
+
+<h4 id="标记-清扫-mark-and-sweep">标记-清扫（mark-and-sweep）</h4>
+
+<p>根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。</p>
+
+<h3 id="优化方案">优化方案</h3>
+
+<h4 id="自适应">自适应</h4>
+
+<p>Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。</p>
+
+<h4 id="分代">分代</h4>
+
+<p>CLR和Java中的垃圾回收器都有分代的概念。<br />
+以CLR中的GC为例，介绍一下代的概念。<br />
+垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）：</p>
+
+<ul>
+<li><p>对象越新，生存期越短。</p></li>
+
+<li><p>对象越老，生存期越长。</p></li>
+
+<li><p>回收堆的一部分，速度快于回收整个堆。</p></li>
+</ul>
+
+<p>工作原理：</p>
+
+<ul>
+<li><p>CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。</p></li>
+
+<li><p>托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。</p></li>
+
+<li><p>根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。</p></li>
+
+<li><p>继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。</p></li>
+
+<li><p>如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。</p></li>
+</ul>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

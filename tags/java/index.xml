@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on agchen</title>
+    <link>https://agchen28.github.io/tags/java/</link>
+    <description>Recent content in Java on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 27 Apr 2017 11:33:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://agchen28.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>泛型</title>
+      <link>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</link>
+      <pubDate>Thu, 27 Apr 2017 11:33:01 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</guid>
+      <description>许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。
+泛型就是参数化的类型，使代码可以应用于多种类型。
+Java中的泛型 Java SE5引入了泛型。
+了解一下Java是如何实现泛型的，以及为何采用这种设计方案。
+实现方案 看个例子：
+public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。
+Java采用擦除来实现泛型。
+一个是类型的擦除，ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。
+还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。
+Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。
+就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。
+采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分。
+擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。
+因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。
+.NET中的泛型 来看一下.NET中如何实现泛型。
+泛型也不是.NET一出现就有的，在CLR2.0中被加入。
+开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。
+具有泛型参数的类型也是类型，同样会有自己的类型对象。
+ 开放类型
+具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）
+ 封闭类型
+为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。
+如果只传递了部分类型参数，会创建新的开放类型对象。
+  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。
+代码爆炸 这是.NET中泛型实现方式的一个缺点。
+使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。
+两个优化：
+CLR只会为一个方法/类型组合编译一次代码。</description>
+    </item>
+    
+    <item>
+      <title>单例模式</title>
+      <link>https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 04 Apr 2017 22:04:14 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>单例模式（Singleton Pattern） 有翻译成单件或者单态。反正它的特点就是单，比单身狗还单。
+单身狗经常还会搞搞基，单例想搞个基都找不到同类，它是一个独一无二的对象，因为它的类只能被实例化一次。
+理解上一般没什么问题，但是实现上还是可以稍微扯下蛋的。
+常见的实现方式 public sealed class Singleton { //需要一个额外的Object对象来实现线程同步 private static Object s_lock = new Object(); //一个静态字段来引用一个单实例对象 private static Singleton uniqueInstance; //私有构造器，阻止外部任何代码创建实例 private Singleton() { //初始化的代码 } //一个全局访问点，返回单实例对象 public static Singleton GetSingleton() { //巧妙之处在此：如果对象以及创建，不需要进行线程同步，直接返回 if (uniqueInstance == null) { //锁了Object对象，保证同时只有一个线程执行以下代码块 lock (s_lock) { //再次判断，如果还未创建则进行创建 if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  几个关键  私有的构造函数 一个全局访问点GetSingleton 还有就是不得不提的双检锁（Double-Check Locking）技术  这样的实现在工作中很常见。</description>
+    </item>
+    
+    <item>
+      <title>垃圾回收器</title>
+      <link>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</link>
+      <pubDate>Sun, 25 Dec 2016 11:11:42 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</guid>
+      <description> 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
+给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。
+这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。
+引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。
+清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。
+这种方式有两个问题：
+一来需要有两个堆，相当于需要多一倍的空间。
+二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。
+标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。
+优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。
+分代 CLR和Java中的垃圾回收器都有分代的概念。
+以CLR中的GC为例，介绍一下代的概念。
+垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）：
+ 对象越新，生存期越短。
+ 对象越老，生存期越长。
+ 回收堆的一部分，速度快于回收整个堆。
+  工作原理：
+ CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。
+ 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。
+ 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。
+ 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。
+ 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。
+  </description>
+    </item>
+    
+  </channel>
+</rss>

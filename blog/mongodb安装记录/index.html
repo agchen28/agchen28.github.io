@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>Mongodb安装记录 - agchen</title>
+    
+<meta name="description" content="下载 https://www.mongodb.com/download-center#community选择相应的版本下载安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod &#43;x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.">
+
+<meta property="og:title" content="Mongodb安装记录 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="下载 https://www.mongodb.com/download-center#community选择相应的版本下载安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod &#43;x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+<meta name="twitter:title" content="Mongodb安装记录 - agchen">
+<meta name="twitter:description" content="下载 https://www.mongodb.com/download-center#community选择相应的版本下载安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod &#43;x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "Mongodb安装记录 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-02-08T11:05:10JST",
+    "dateModified": "2017-02-08T11:05:10JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "下载 https://www.mongodb.com/download-center#community
+选择相应的版本下载
+安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：
+dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod +x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：
+#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database."
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">Mongodb安装记录</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-02-08T11:05:10JST">2017年02月08日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">Mongodb安装记录</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<h3 id="下载">下载</h3>
+
+<p><a href="https://www.mongodb.com/download-center#community">https://www.mongodb.com/download-center#community</a><br />
+选择相应的版本下载</p>
+
+<h3 id="安装">安装</h3>
+
+<pre><code>mkdir mongodb
+cd mongodb
+mkdir db
+mkdir logs
+tar -zxvf mongodb-linux-x86_64-3.4.3.tgz
+cd mongodb-linux-x86_64-3.4.3/bin
+vim mongodb.conf
+</code></pre>
+
+<p>mongodb.conf内容：</p>
+
+<pre><code>dbpath=/opt/mongodb/db
+logpath=/opt/mongodb/logs/mongodb.log
+port=27017
+fork=true
+nohttpinterface=true
+bind_ip=192.168.142.200
+#auth=true #开启用户认证
+</code></pre>
+
+<h3 id="启动">启动</h3>
+
+<pre><code>/opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf
+</code></pre>
+
+<h3 id="检测">检测</h3>
+
+<pre><code>ps -ef |grep mongo  #检测后台进程是否存在
+netstat -lntp | grep 27017   
+./mongo 192.168.142.200:27017
+</code></pre>
+
+<h3 id="开机启动">开机启动</h3>
+
+<pre><code>vim /etc/init.d/mongodb
+chmod +x /etc/init.d/mongodb    #赋予执行权限
+service mongodb start/stop
+chkconfig mongodb on    #设为开机启动
+</code></pre>
+
+<p>脚本如下（看不懂）：</p>
+
+<pre><code>#!/bin/bash
+# mongod - Startup script for mongod
+# chkconfig: 35 80 15
+# description: Mongo is a scalable, document-oriented database.
+# processname: mongod
+#config: /db/conf/mongodb/mongod.conf
+# pidfile: /var/run/mongo/mongo.pid
+
+source /etc/rc.d/init.d/functions
+
+# things from mongod.conf get there by mongod reading it
+
+if [ $(id -u) != &quot;0&quot; ]; then
+    echo &quot;Permission Denied! Please use root to run again!&quot;
+    exit 1
+fi
+
+test -d /var/run/mongodb || (mkdir -p /var/run/mongodb ; chown mongod:mongod /var/run/mongodb)
+
+# NOTE: if you change any OPTIONS here, you get what you pay for:
+# this script assumes all options are in the config file.
+CONFIGFILE=&quot;/opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf&quot;
+SYSCONFIG=&quot;/etc/sysconfig/mongod&quot;
+
+export PATH=$PATH:/opt/mongodb/mongodb-linux-x86_64-3.4.3/bin
+
+DBPATH=`awk -F= '/^dbpath/{print $2}' &quot;$CONFIGFILE&quot;`
+OPTIONS=&quot; --config $CONFIGFILE&quot;
+mongod=${MONGOD-/opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod}
+echo &quot;db path is: &quot;$DBPATH
+echo $mongod
+MONGO_USER=leftfist
+MONGO_GROUP=leftfist
+
+[ -r &quot;$SYSCONFIG&quot; ] &amp;&amp; source &quot;$SYSCONFIG&quot;
+
+super() {
+    su - $MONGO_USER -c &quot;PATH=$PATH://opt/mongodb/mongodb-linux-x86_64-3.4.3/bin; $*&quot;
+}
+
+start()
+{
+  echo -n $&quot;Starting mongod: &quot;
+#  daemon --user &quot;$MONGO_USER&quot; &quot;numactl --interleave=all&quot; $mongod $OPTIONS
+#daemon --user &quot;$MONGO_USER&quot; $mongod $OPTIONS
+#  
+#   su - $MONGO_USER -c &quot;$mongod $OPTIONS&quot; -m -p
+#  su - $MONGO_USER
+  $mongod $OPTIONS
+#  super $mongod $OPTIONS
+  echo $mongod$OPTIONS
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] &amp;&amp; touch /var/lock/subsys/mongod
+}
+
+stop()
+{
+  echo -n $&quot;Stopping mongod: &quot;
+  killproc -p &quot;$DBPATH&quot;/mongod.lock -d 300 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] &amp;&amp; rm -f /var/lock/subsys/mongod
+}
+
+restart () {
+        stop
+        start
+}
+
+ulimit -n 12000
+RETVAL=0
+
+case &quot;$1&quot; in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload|force-reload)
+    restart
+    ;;
+  condrestart)
+    [ -f /var/lock/subsys/mongod ] &amp;&amp; restart || :
+    ;;
+  status)
+    status $mongod
+    RETVAL=$?
+    ;;
+  *)
+    echo &quot;Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}&quot;
+    RETVAL=1
+esac
+
+exit $RETVAL
+</code></pre>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

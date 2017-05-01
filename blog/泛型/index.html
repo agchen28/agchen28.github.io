@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>泛型 - agchen</title>
+    
+<meta name="description" content="许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。泛型就是参数化的类型，使代码可以应用于多种类型。Java中的泛型 Java SE5引入了泛型。了解一下Java是如何实现泛型的，以及为何采用这种设计方案。实现方案 看个例子：public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。Java采用擦除来实现泛型。一个是类型的擦除，ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分。擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。.NET中的泛型 来看一下.NET中如何实现泛型。泛型也不是.NET一出现就有的，在CLR2.0中被加入。开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。具有泛型参数的类型也是类型，同样会有自己的类型对象。 开放类型具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法） 封闭类型为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。如果只传递了部分类型参数，会创建新的开放类型对象。  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。代码爆炸 这是.NET中泛型实现方式的一个缺点。使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。两个优化：CLR只会为一个方法/类型组合编译一次代码。">
+
+<meta property="og:title" content="泛型 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。泛型就是参数化的类型，使代码可以应用于多种类型。Java中的泛型 Java SE5引入了泛型。了解一下Java是如何实现泛型的，以及为何采用这种设计方案。实现方案 看个例子：public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。Java采用擦除来实现泛型。一个是类型的擦除，ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分。擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。.NET中的泛型 来看一下.NET中如何实现泛型。泛型也不是.NET一出现就有的，在CLR2.0中被加入。开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。具有泛型参数的类型也是类型，同样会有自己的类型对象。 开放类型具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法） 封闭类型为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。如果只传递了部分类型参数，会创建新的开放类型对象。  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。代码爆炸 这是.NET中泛型实现方式的一个缺点。使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。两个优化：CLR只会为一个方法/类型组合编译一次代码。">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/">
+<meta name="twitter:title" content="泛型 - agchen">
+<meta name="twitter:description" content="许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。泛型就是参数化的类型，使代码可以应用于多种类型。Java中的泛型 Java SE5引入了泛型。了解一下Java是如何实现泛型的，以及为何采用这种设计方案。实现方案 看个例子：public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。Java采用擦除来实现泛型。一个是类型的擦除，ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分。擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。.NET中的泛型 来看一下.NET中如何实现泛型。泛型也不是.NET一出现就有的，在CLR2.0中被加入。开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。具有泛型参数的类型也是类型，同样会有自己的类型对象。 开放类型具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法） 封闭类型为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。如果只传递了部分类型参数，会创建新的开放类型对象。  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。代码爆炸 这是.NET中泛型实现方式的一个缺点。使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。两个优化：CLR只会为一个方法/类型组合编译一次代码。">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "泛型 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-04-27T11:33:01JST",
+    "dateModified": "2017-04-27T11:33:01JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。
+泛型就是参数化的类型，使代码可以应用于多种类型。
+Java中的泛型 Java SE5引入了泛型。
+了解一下Java是如何实现泛型的，以及为何采用这种设计方案。
+实现方案 看个例子：
+public class Test { public static void main(String[] args) { Class c1 = new ArrayList&lt;Integer&gt;().getClass(); Class c2 = new ArrayList&lt;String&gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&lt;Integer&gt;和ArrayList&lt;String&gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。
+Java采用擦除来实现泛型。
+一个是类型的擦除，ArrayList&lt;Integer&gt;和ArrayList&lt;String&gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。
+还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。
+Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。
+就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。
+采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分。
+擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。
+因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。
+.NET中的泛型 来看一下.NET中如何实现泛型。
+泛型也不是.NET一出现就有的，在CLR2.0中被加入。
+开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。
+具有泛型参数的类型也是类型，同样会有自己的类型对象。
+ 开放类型
+具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）
+ 封闭类型
+为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。
+如果只传递了部分类型参数，会创建新的开放类型对象。
+  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。
+代码爆炸 这是.NET中泛型实现方式的一个缺点。
+使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。
+两个优化：
+CLR只会为一个方法/类型组合编译一次代码。"
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">泛型</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-04-27T11:33:01JST">2017年04月27日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">泛型</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。<br />
+泛型就是参数化的类型，使代码可以应用于多种类型。</p>
+
+<h3 id="java中的泛型">Java中的泛型</h3>
+
+<p>Java SE5引入了泛型。<br />
+了解一下Java是如何实现泛型的，以及为何采用这种设计方案。</p>
+
+<h4 id="实现方案">实现方案</h4>
+
+<p>看个例子：</p>
+
+<pre><code class="language-java">public class Test {
+    public static void main(String[] args) {
+        Class c1 = new ArrayList&lt;Integer&gt;().getClass();
+        Class c2 = new ArrayList&lt;String&gt;().getClass();
+        System.out.println(c1 == c2);//true
+        System.out.println(c1.toString());//class java.util.ArrayList
+        System.out.println(c2.toString());//class java.util.ArrayList
+    }
+}
+</code></pre>
+
+<p>我们会发现ArrayList&lt;Integer&gt;和ArrayList&lt;String&gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。<br />
+Java采用擦除来实现泛型。<br />
+一个是类型的擦除，ArrayList&lt;Integer&gt;和ArrayList&lt;String&gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。<br />
+还有类型参数的擦除，泛型类型参数将擦除到它的第一个边界，如果未指定边界，将被擦除成Object。<br />
+Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。<br />
+就个人愚见，Java的泛型概念只存在于Java编译器，对于运行时来说它根本不知道泛型是什么鬼东西。</p>
+
+<h4 id="采用这种设计方案的原因">采用这种设计方案的原因</h4>
+
+<p>因为泛型不是在Java语言出现就有的组成部分。<br />
+擦除的核心动机是它使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。<br />
+因此Java泛型不仅必须支持向后兼容性，而且还要支持迁移兼容性。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。</p>
+
+<h3 id="net中的泛型">.NET中的泛型</h3>
+
+<p>来看一下.NET中如何实现泛型。<br />
+泛型也不是.NET一出现就有的，在CLR2.0中被加入。</p>
+
+<h4 id="开放类型与封闭类型">开放类型与封闭类型</h4>
+
+<p>我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。<br />
+具有泛型参数的类型也是类型，同样会有自己的类型对象。</p>
+
+<ul>
+<li><p>开放类型<br />
+具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）</p></li>
+
+<li><p>封闭类型<br />
+为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。<br />
+如果只传递了部分类型参数，会创建新的开放类型对象。</p></li>
+</ul>
+
+<p>至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。</p>
+
+<h4 id="代码爆炸">代码爆炸</h4>
+
+<p>这是.NET中泛型实现方式的一个缺点。<br />
+使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。<br />
+两个优化：<br />
+CLR只会为一个方法/类型组合编译一次代码。<br />
+CLR认为所有引用类型实参都完全相同，所以代码能够共享。（例如List&lt;String&gt;编译的代码可直接用于List&lt;Stream&gt;的方法，因为它们都是引用类型。乍一看好像会出问题，但是所有引用类型的实参或者变量实际上都是指向堆上对象的指针，而所有对象指针都以相同方式操作）</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

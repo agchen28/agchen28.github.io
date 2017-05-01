@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>虚拟机安装记录 - agchen</title>
+    
+<meta name="description" content="本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。下载安装文件 官网下载：https://www.centos.org/VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装安装常用工具 yum install vimyum install wgetyum install treeyum install lrzszyum install taryum install unzipyum install -y gcc g&#43;&#43; gcc-c&#43;&#43; make配置IP vim /etc/sysconfig/network-script/ifcfg-eth0IPADDR=192.168.91.100GATEWAY=192.168.91.2NETMASK=255.255.255.0BOOTPROTO=static设置完ip可以通过xshell连接修改hosts文件vim /etc/hosts192.168.91.100 linux01立即生效source etc/hosts设置dnsvim /etc/resolf.cnf关闭防火墙chkconfig iptables offservice iptables stop">
+
+<meta property="og:title" content="虚拟机安装记录 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。下载安装文件 官网下载：https://www.centos.org/VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装安装常用工具 yum install vimyum install wgetyum install treeyum install lrzszyum install taryum install unzipyum install -y gcc g&#43;&#43; gcc-c&#43;&#43; make配置IP vim /etc/sysconfig/network-script/ifcfg-eth0IPADDR=192.168.91.100GATEWAY=192.168.91.2NETMASK=255.255.255.0BOOTPROTO=static设置完ip可以通过xshell连接修改hosts文件vim /etc/hosts192.168.91.100 linux01立即生效source etc/hosts设置dnsvim /etc/resolf.cnf关闭防火墙chkconfig iptables offservice iptables stop">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+<meta name="twitter:title" content="虚拟机安装记录 - agchen">
+<meta name="twitter:description" content="本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。下载安装文件 官网下载：https://www.centos.org/VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装安装常用工具 yum install vimyum install wgetyum install treeyum install lrzszyum install taryum install unzipyum install -y gcc g&#43;&#43; gcc-c&#43;&#43; make配置IP vim /etc/sysconfig/network-script/ifcfg-eth0IPADDR=192.168.91.100GATEWAY=192.168.91.2NETMASK=255.255.255.0BOOTPROTO=static设置完ip可以通过xshell连接修改hosts文件vim /etc/hosts192.168.91.100 linux01立即生效source etc/hosts设置dnsvim /etc/resolf.cnf关闭防火墙chkconfig iptables offservice iptables stop">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "虚拟机安装记录 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-01-27T21:07:37JST",
+    "dateModified": "2017-01-27T21:07:37JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。
+下载安装文件 官网下载：https://www.centos.org/
+VM创建新的虚拟机 选择典型-&gt;稍后安装操作系统-&gt;选择linux，设置CentOS 64位-&gt; 填写虚拟机名称-&gt;设置CD/DVD路径，选择使用ISO映像文件-&gt;一路默认直到完成
+安装操作系统 开启虚拟机-&gt;进入安装程序-&gt;选择skip-&gt;选择简体中文-&gt;一路下一步-&gt; 设置主机名-&gt;配置网络，编辑，勾选自动连接-&gt;继续下一步-&gt;设置root密码-&gt; 点击下一步开始安装
+安装常用工具 yum install vim
+yum install wget
+yum install tree
+yum install lrzsz
+yum install tar
+yum install unzip
+yum install -y gcc g++ gcc-c++ make
+配置IP vim /etc/sysconfig/network-script/ifcfg-eth0
+IPADDR=192.168.91.100
+GATEWAY=192.168.91.2
+NETMASK=255.255.255.0
+BOOTPROTO=static
+设置完ip可以通过xshell连接
+修改hosts文件
+vim /etc/hosts
+192.168.91.100 linux01
+立即生效
+source etc/hosts
+设置dns
+vim /etc/resolf.cnf
+关闭防火墙
+chkconfig iptables off
+service iptables stop"
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">虚拟机安装记录</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2017-01-27T21:07:37JST">2017年01月27日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">虚拟机安装记录</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。</p>
+
+<h2 id="下载安装文件">下载安装文件</h2>
+
+<p>官网下载：<a href="https://www.centos.org/">https://www.centos.org/</a></p>
+
+<h2 id="vm创建新的虚拟机">VM创建新的虚拟机</h2>
+
+<p>选择典型-&gt;稍后安装操作系统-&gt;选择linux，设置CentOS 64位-&gt;
+填写虚拟机名称-&gt;设置CD/DVD路径，选择使用ISO映像文件-&gt;一路默认直到完成</p>
+
+<h2 id="安装操作系统">安装操作系统</h2>
+
+<p>开启虚拟机-&gt;进入安装程序-&gt;选择skip-&gt;选择简体中文-&gt;一路下一步-&gt;
+设置主机名-&gt;配置网络，编辑，勾选自动连接-&gt;继续下一步-&gt;设置root密码-&gt;
+点击下一步开始安装</p>
+
+<h2 id="安装常用工具">安装常用工具</h2>
+
+<p>yum install vim<br />
+yum install wget<br />
+yum install tree<br />
+yum install lrzsz<br />
+yum install tar<br />
+yum install unzip<br />
+yum install -y gcc g++ gcc-c++ make</p>
+
+<h2 id="配置ip">配置IP</h2>
+
+<p>vim /etc/sysconfig/network-script/ifcfg-eth0</p>
+
+<p>IPADDR=192.168.91.100<br />
+GATEWAY=192.168.91.2<br />
+NETMASK=255.255.255.0<br />
+BOOTPROTO=static</p>
+
+<p>设置完ip可以通过xshell连接</p>
+
+<p>修改hosts文件<br />
+vim /etc/hosts<br />
+192.168.91.100 linux01</p>
+
+<p>立即生效<br />
+source etc/hosts</p>
+
+<p>设置dns<br />
+vim /etc/resolf.cnf</p>
+
+<p>关闭防火墙<br />
+chkconfig iptables off<br />
+service iptables stop</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/.net" class="list-group-item">.net</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0" class="list-group-item">读书笔记</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/" class="list-group-item">泛型</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/" class="list-group-item">JavaScript中的function</a>
+      
+      <a href="https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">.NET程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/" class="list-group-item">JavaScript中的对象</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/" class="list-group-item">客户-服务器模型</a>
+      
+      <a href="https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Mongodb安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/" class="list-group-item">Redis安装记录</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
