@@ -107,13 +107,13 @@
   </url>
   
   <url>
-    <loc>https://agchen28.github.io/tags/.net/</loc>
-    <lastmod>2017-04-27T11:33:01+08:00</lastmod>
+    <loc>https://agchen28.github.io/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://agchen28.github.io/categories/</loc>
+    <loc>https://agchen28.github.io/tags/dotnet/</loc>
+    <lastmod>2017-04-27T11:33:01+08:00</lastmod>
     <priority>0</priority>
   </url>
   
