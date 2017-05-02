@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dotnet on agchen</title>
+    <link>https://agchen28.github.io/tags/dotnet/</link>
+    <description>Recent content in Dotnet on agchen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 27 Apr 2017 11:33:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://agchen28.github.io/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>泛型</title>
+      <link>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</link>
+      <pubDate>Thu, 27 Apr 2017 11:33:01 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</guid>
+      <description>许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。
+泛型就是参数化的类型，使代码可以应用于多种类型。
+Java中的泛型 Java SE5引入了泛型。
+了解一下Java是如何实现泛型的，以及为何采用这种设计方案。
+实现方案 看个例子：
+public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。
+Java采用擦除来实现泛型。
+ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。
+Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。
+就个人愚见，Java的泛型概念只存在于Java编译器，它令我们有使用泛型的感觉，对于运行时来说它根本不知道泛型是什么鬼东西。
+采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分，所以把泛型加入到Java中需要考虑一些兼容性问题。
+Java泛型不仅必须支持向后兼容性，而且还要支持“迁移兼容性”。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。
+“迁移兼容性”：
+要使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。
+.NET中的泛型 来看一下.NET中如何实现泛型。
+泛型也不是.NET一出现就有的，在CLR2.0中被加入。
+开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。
+具有泛型参数的类型也是类型，同样会有自己的类型对象。
+ 开放类型
+具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）
+ 封闭类型
+为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。
+如果只传递了部分类型参数，会创建新的开放类型对象。
+  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。
+代码爆炸 这是.NET中泛型实现方式的一个缺点。
+使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。
+两个优化：
+CLR只会为一个方法/类型组合编译一次代码。</description>
+    </item>
+    
+    <item>
+      <title>单例模式</title>
+      <link>https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Tue, 04 Apr 2017 22:04:14 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>单例模式（Singleton Pattern） 有翻译成单件或者单态。反正它的特点就是单，比单身狗还单。
+单身狗经常还会搞搞基，单例想搞个基都找不到同类，它是一个独一无二的对象，因为它的类只能被实例化一次。
+理解上一般没什么问题，但是实现上还是可以稍微扯下蛋的。
+常见的实现方式 public sealed class Singleton { //需要一个额外的Object对象来实现线程同步 private static Object s_lock = new Object(); //一个静态字段来引用一个单实例对象 private static Singleton uniqueInstance; //私有构造器，阻止外部任何代码创建实例 private Singleton() { //初始化的代码 } //一个全局访问点，返回单实例对象 public static Singleton GetSingleton() { //巧妙之处在此：如果对象以及创建，不需要进行线程同步，直接返回 if (uniqueInstance == null) { //锁了Object对象，保证同时只有一个线程执行以下代码块 lock (s_lock) { //再次判断，如果还未创建则进行创建 if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  几个关键  私有的构造函数 一个全局访问点GetSingleton 还有就是不得不提的双检锁（Double-Check Locking）技术  这样的实现在工作中很常见。</description>
+    </item>
+    
+    <item>
+      <title>.NET程序执行过程</title>
+      <link>https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Thu, 23 Feb 2017 11:05:53 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/.net%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</guid>
+      <description>码几行代码 internal class Employee { public Int32 GetYearsEmployed() {...} public virtual String GetProgressReport() {...} public static Employee Lookup(String name) {...} } internal class Manager : Employee { public override string GetProgressReport() {...} }  void M3() { Employee e; Int32 year; e = new Manager(); e = Employee.Lookup(&amp;quot;joe&amp;quot;); year = e.GetYearsEmployed(); e.GetProgressReport(); }  执行过程 初始化： 启动Windows进程，加载CLR，初始化托管堆，创建一个线程并分配1M的线程栈。（如下图：左侧矩形为线程栈，顶部灰色部分加三个点表示已经执行过一些代码。右侧一大坨表示托管堆，M3方法未执行前可能会有其他对象，我们暂且不管。） 调用M3方法： 调用M3方法的时候，CLR会在托管堆上创建M3方法中所需要的类型对象。在这里我们用到Employee，Manager，Int32和String。但Int32和String是常用类型，我们假定它们已经在其他方法中创建了。 关于类型对象：
+类型对象就是运行时用来表示该类型的一个对象，这个对象包含一些静态字段。
+可以结合实例对象来理解类型对象，实例对象是我们通过调用构造函数创建的对象，类型对象则是CLR自动调用静态构造函数创建的对象（换句话说，我们平时写的静态构造函数就是用来构造这个类型对象的），在一个托管堆中每个类型只有唯一一个类型对象。
+ 类型对象指针。每个托管堆上的对象都有的东西。
+实例对象的类型对象指针会指到它对应的类型对象上。
+类型对象的类型对象指针会指到System.Type类型对象上（这是一个特殊的类型对象，Type类型对象的类型对象指针会指向本身）。
+System.Object的GetType方法就是返回存储在指定对象的类型对象指针中的地址。
+ 同步块索引。也是每个托管堆上的对象都有的东西。</description>
+    </item>
+    
+    <item>
+      <title>lock</title>
+      <link>https://agchen28.github.io/blog/lock/</link>
+      <pubDate>Sat, 28 Jan 2017 16:24:53 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/lock/</guid>
+      <description>说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。
+Monitor只是FCL中提供的混合线程同步构造中的其中一个。
+Monitor这么有名气主要是因为它是C#中资历最老，使用最广的线程同步构造。
+使用方法 贴一段单例的代码：
+public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：
+Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor.</description>
+    </item>
+    
+    <item>
+      <title>线程同步构造</title>
+      <link>https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/</link>
+      <pubDate>Wed, 25 Jan 2017 11:13:00 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/</guid>
+      <description>这个主题涉及内容太多，只能先简单介绍一下。
+线程同步构造就是我们俗话说的锁。
+锁的作用就是确保一次只有一个线程访问资源。
+为什么需要锁呢？
+多个线程同时访问共享数据时（必须是共享数据，还有同时访问），锁能防止数据损坏。当然多个线程对共享数据进行只读访问是没有任何问题的。
+锁的使用一定是要不得已而为之，因为它有很多缺点。比如影响性能，增加复杂性，还容易出问题。
+基元线程同步构造 基元指可以在代码中使用的最简单构造。
+有两种基元构造：用户模式（useÏr-mode）和内核模式（kernel-mode）。
+用户模式构造 应尽量使用用户模式构造，它们的速度显著快于内核模式的构造。
+特点：
+使用特殊的CPU指令来协调线程，意味着协调是在硬件中发生的，也意味着操作系统不知道一个线程在用户模式构造中阻塞了，由于操作系统不认为它已经被阻塞了，所以线程池不会创建新线程来替换这种临时阻塞的线程。
+这些CPU指令只阻塞线程相当短的时间。
+缺点：
+想要取得资源但暂时取不到的线程会一直在用户模式中“自旋”，这会浪费CPU时间。
+有两种基元用户模式线程同步构造：
+ 易变构造（volatile construct）
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读或写操作。
+ 互锁构造（interlocked construct）
+在特定的时间，它在包含一个简单数据类型的变量上执行原子性的读和写操作。
+  内核模式构造 内核模式构造比用户模式构造慢得多，需要操作系统的配合。
+优点：
+操作系统知道一个线程是否在内核模式构造上阻塞了。
+可以实现本机和托管线程相互之间的同步。
+可以同步一个机器的不同进程中的线程。
+混合线程同步构造 所有的线程同步构造都是基于用户模式构造和内核模式构造所构建的，混合了这两种构造的就称为混合线程同步构造。
+混合线程同步构造一般结合了这两种线程同步构造的优点，即在没有线程竞争时，混合构造提供了基元用户模式构造的性能优势；当出现线程竞争时，又具备内核模式构造不“自旋”的优势（不浪费cpu时间）。
+这里面有个最重要的，也是我们最常用的Monitor，可能大家对这名字还是比较陌生，但是它就是我们平时用得最多的lock。</description>
+    </item>
+    
+    <item>
+      <title>垃圾回收器</title>
+      <link>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</link>
+      <pubDate>Sun, 25 Dec 2016 11:11:42 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</guid>
+      <description> 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
+给每个对象一个引用计数器，当有引用连接到对象时，计数器加1，当引用离开作用域或者被置为null时，计数器减1。垃圾回收器扫描全部对象，当计数器为0时，释放该对象。
+这种方式有个缺陷，当出现循环引用时，该被释放的对象的引用计数却不为0。
+引用跟踪 将所有引用了堆上对象的变量称为根。检查所有活动根，查看它们引用了哪些对象，如果引用了堆上的对象，会继续检查该对象中的根，这样就可以确保所有“活”的对象都被访问到，而且解决了“交互自引用的对象组”的问题。
+清理 停止-复制（stop-and-copy） 先暂停程序的运行（不属于后台回收模式），将所有存活的对象 复制到新堆并保持紧凑排列。
+这种方式有两个问题：
+一来需要有两个堆，相当于需要多一倍的空间。
+二来当程序运行稳定后，可能只产生少量垃圾，如果仍然复制所有内存显然有点浪费。
+标记-清扫（mark-and-sweep） 根据引用跟踪算法，为所有存活的对象做上标记。当标记工作完成时，清理动作开始，没被标记的对象都将被清理掉。这时堆中的空间是不连续的，所以一般接下来都会有个重新整理的操作。
+优化方案 自适应 Java虚拟机根据清理效果，如果所有对象都很稳定，垃圾回收器的效率降低的话，就切换到“标记-清扫”模式；同样，根据“标记-清扫”的效果，如果堆中出现很多碎片，就切换回“停止-复制”模式。
+分代 CLR和Java中的垃圾回收器都有分代的概念。
+以CLR中的GC为例，介绍一下代的概念。
+垃圾回收器会假设你的代码中（大量研究表明，这些假设对于现今大多数应用程序都是成立的）：
+ 对象越新，生存期越短。
+ 对象越老，生存期越长。
+ 回收堆的一部分，速度快于回收整个堆。
+  工作原理：
+ CLR的GC支持三代：第0，第1，第2。CLR初始化时为每代选择预算，这个预算会根据垃圾回收效果动态调节。
+ 托管堆在初始化时不包含对象，这时添加的对象被称为第0代，垃圾回收器从未检查过它们。
+ 根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。
+ 继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。
+ 如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。
+  </description>
+    </item>
+    
+    <item>
+      <title>CSharp中的委托</title>
+      <link>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</link>
+      <pubDate>Sat, 26 Nov 2016 09:33:54 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</guid>
+      <description>委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
+既然委托是一个类，我们就来看一下这个类中有哪些重要的方法和字段。
+//当我们定义一个委托时 internal delegate void Feedback(Int32 value); //编译器会定义一个完整的类： internal class Feedback : System.MulticastDelegate{ //构造器 public Feedback(Object @obejct,IntPtr method); //这个方法的原型和你定义的委托一样 //当在一个委托对象后面加上括号调用的时候其实就是调用Invoke方法 public virtual void Invoke(Int32 value); //以下方法实现对回调方法的异步回调 public virtual IAsyncResult BeginInvoke(Int32 value, AsyncCallback callback, Object @object); public virtual void EndInvoke(IAsyncResult result); }  所有的委托类型都派生自MulticastDelegate，MulticastDelegate又派生自System.Delegate。MulticastDelegate有三个最重要的非公共字段。
+ _target Oject类型 指出方法的对象，如果是静态方法置为null。
+ _methodPtr IntPtr类型 一个内部的整数值，CLR用它标识要回调的方法。
+ _invocationList Object类型 该字段通常为null。构造委托链时它引用一个委托数组。
+  </description>
+    </item>
+    
+  </channel>
+</rss>
