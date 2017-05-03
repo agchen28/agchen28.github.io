@@ -6,46 +6,10 @@
     <description>Recent content in Posts on agchen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 27 Apr 2017 11:33:01 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 04 Apr 2017 22:04:14 +0800</lastBuildDate>
     
 	<atom:link href="https://agchen28.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>泛型</title>
-      <link>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</link>
-      <pubDate>Thu, 27 Apr 2017 11:33:01 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</guid>
-      <description>许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。
-泛型就是参数化的类型，使代码可以应用于多种类型。
-Java中的泛型 Java SE5引入了泛型。
-了解一下Java是如何实现泛型的，以及为何采用这种设计方案。
-实现方案 看个例子：
-public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。
-Java采用擦除来实现泛型。
-ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。
-Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。
-就个人愚见，Java的泛型概念只存在于Java编译器，它令我们有使用泛型的感觉，对于运行时来说它根本不知道泛型是什么鬼东西。
-采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分，所以把泛型加入到Java中需要考虑一些兼容性问题。
-Java泛型不仅必须支持向后兼容性，而且还要支持“迁移兼容性”。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。
-“迁移兼容性”：
-要使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。
-.NET中的泛型 来看一下.NET中如何实现泛型。
-泛型也不是.NET一出现就有的，在CLR2.0中被加入。
-开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。
-具有泛型参数的类型也是类型，同样会有自己的类型对象。
- 开放类型
-具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）
- 封闭类型
-为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。
-如果只传递了部分类型参数，会创建新的开放类型对象。
-  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。
-代码爆炸 这是.NET中泛型实现方式的一个缺点。
-使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。
-两个优化：
-CLR只会为一个方法/类型组合编译一次代码。</description>
-    </item>
     
     <item>
       <title>单例模式</title>
@@ -57,34 +21,6 @@ CLR只会为一个方法/类型组合编译一次代码。</description>
 单身狗经常还会搞搞基，单例想搞个基都找不到同类，它是一个独一无二的对象，因为它的类只能被实例化一次。
 理解上一般没什么问题，但是实现上还是可以稍微扯下蛋的。
 常见的实现方式 public sealed class Singleton { //需要一个额外的Object对象来实现线程同步 private static Object s_lock = new Object(); //一个静态字段来引用一个单实例对象 private static Singleton uniqueInstance; //私有构造器，阻止外部任何代码创建实例 private Singleton() { //初始化的代码 } //一个全局访问点，返回单实例对象 public static Singleton GetSingleton() { //巧妙之处在此：如果对象以及创建，不需要进行线程同步，直接返回 if (uniqueInstance == null) { //锁了Object对象，保证同时只有一个线程执行以下代码块 lock (s_lock) { //再次判断，如果还未创建则进行创建 if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  几个关键  私有的构造函数 一个全局访问点GetSingleton 还有就是不得不提的双检锁（Double-Check Locking）技术  这样的实现在工作中很常见。</description>
-    </item>
-    
-    <item>
-      <title>JavaScript中的function</title>
-      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</link>
-      <pubDate>Tue, 21 Mar 2017 08:50:12 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</guid>
-      <description>JavaScript设计得最出色的就是它的函数的实现。它几乎近于完美。&amp;ndash;Douglas Crockford
-第一类值（first-class values） JavaScript中的函数就是对象。
-可以使用对象的地方都可以使用函数。
-比如可以赋值给变量，保存在其他对象中，可以作为函数的参数或者作为函数的返回值。
-函数跟其他对象不一样的地方在于可以在它后面加个括号调用它。
-据我了解，函数作为第一类值的语言还有Go，Lua。这种设计使得函数使用起来非常灵活。
-C#中实现方法的传递 方法与函数的区别以我的理解来说，方法是面向对象中对于函数的说法，当一个函数属于一个对象，该函数就称为该对象的方法。
-由于C#和Java属于完全面向对象编程语言，所有的函数都是某个对象的方法，即使静态方法也是属于某个类型对象的方法。
-所谓编程，就是将一组需求分解成一组函数和数据结构的技能。
-那么所谓面向对象编程，就是将一组需求分解成一组对象，对象中就包含与本身相关的数据和用来操作数据的方法。
-C#中通过委托（delegate）来实现类似的操作。
-委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
-调用  方法调用模式
-当一个函数属于一个对象时，我们通过使用该对象的点操作符来调用该函数，这种调用方式就是方法调用模式。
-方法内部的this会被绑定到该对象，这个绑定是在调用的时候发生。
-var myObject = { value: 0, incrament: function (inc) { this.value += typeof inc === &#39;number&#39; ? inc : 1; } }; myObject.increment(); document.writeln(myObject.value);//1 myObject.increment(2); document.writeln(myObject.value);//3  函数调用模式
-当一个函数并非一个对象的属性时，那么它就是被当作一个函数来调用。
-此模式调用函数时，this被绑定到全局对象。这是语言设计上的一个错误。倘若语言设计正确，那么当内部函数被调用时，this应该仍然绑定到外部函数的this变量。（Douglas Crockford大神的原话）
-看解决方案：
-//给myObject增加一个double方法。 myObject.double = function () { var that = this; var helper = function () { that.</description>
     </item>
     
     <item>
@@ -104,26 +40,11 @@ System.Object的GetType方法就是返回存储在指定对象的类型对象指
     </item>
     
     <item>
-      <title>JavaScript中的对象</title>
-      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</link>
-      <pubDate>Tue, 21 Feb 2017 09:34:12 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</guid>
-      <description>在JavaScript中，数组是对象，函数是对象，正则表达式是对象，当然，对象自然也是对象。
-JavaScript里的对象是无类型（class-free）的。它对新属性的名字和属性的值没有限制。
-原型（prototype）  原型对象
-每个对象都链接到一个原型对象，并且它可以从中继承属性（听起来是不是像CLR中的类型对象）。所有通过对象字面量创建的对象都连接到Object.prototype,它是JavaScript中的标配对象。
-原型链接在更新时是不起作用的。当我们对某个对象做出改变时，不会触及改对象的原型。
-原型链接只有在检索值的时候才被用到。如果我们尝试去获取对象的某个属性值，但该对象没有此属性名，那么JavaScript会试着从原型对象中获取属性值。如果那个原型对象也没有该属性，那么再从它的原型中找，依次类推，知道该过程最后到达终点Object.prototype。如果想要的属性完全不存在于原型链中，那么结果就是undefined值。
-原型关系是一种动态的关系。如果我们添加一个新的属性到原型中，该属性会立即对所有基于该原型创建的对象可见。  //这种继承方式被称作原型式继承 //通过修改对象的原型对象来实现 if (typeof Object.create !== &#39;function&#39;) { Object.create = function (o) { var F = function () { }; F.prototype = o; return new F(); }; } var another_stooge = Object.create(stooge);   构造函数、原型对象与实例对象之间的关系  function SuperType() { this.property = true; } SuperType.prototype.getSuperValue = function () { return this.property; }; function SubType() { this.subproperty = false; } //继承了SuperType SubType.</description>
-    </item>
-    
-    <item>
-      <title>客户-服务器模型</title>
-      <link>https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/</link>
+      <title>并发型服务器的实现方式</title>
+      <link>https://agchen28.github.io/blog/%E5%B9%B6%E5%8F%91%E5%9E%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/</link>
       <pubDate>Mon, 20 Feb 2017 09:55:22 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B/</guid>
+      <guid>https://agchen28.github.io/blog/%E5%B9%B6%E5%8F%91%E5%9E%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/</guid>
       <description>大部分网络应用程序在编写时都假设一端是客户，另一端是服务器，其目的是让服务器为客户提供特定服务。
 一般将这种服务分为两种类型：重复型或并发型。
  重复型：
@@ -210,31 +131,6 @@ worker中的Java线程。Storm默认给每个executor分配一个task，每个ta
     </item>
     
     <item>
-      <title>Mongodb安装记录</title>
-      <link>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Wed, 08 Feb 2017 11:05:10 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
-      <description>下载 https://www.mongodb.com/download-center#community
-选择相应的版本下载
-安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：
-dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod +x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：
-#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.</description>
-    </item>
-    
-    <item>
-      <title>Redis安装记录</title>
-      <link>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Wed, 08 Feb 2017 11:04:56 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
-      <description> 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。
-mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动
-在启动脚本开头添加如下两行注释以修改其运行级别
-#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  </description>
-    </item>
-    
-    <item>
       <title>Storm集群搭建</title>
       <link>https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</link>
       <pubDate>Sat, 04 Feb 2017 23:30:07 +0800</pubDate>
@@ -250,11 +146,23 @@ storm.zookeeper.servers: - &amp;quot;192.168.142.200&amp;quot; - &amp;quot;192.1
       <pubDate>Sat, 04 Feb 2017 23:19:49 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/kafka%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</guid>
-      <description>环境准备  三台Linux服务器：
+      <description>简介 Apache Kafka是一个分布式消息队列系统。
+相关概念  producer：生产者，负责将消息发布到kafka集群。
+ consumer：消费者，从kafka集群中消费消息。
+ broker：kafka集群中包含的服务器。
+ topic：消息的主题。
+ partition：每个 topic 包含一个或多个 partition。
+  消息的存储 topic被分成一个或多个patition，每个patition物理上对应一个文件夹（该文件夹存储该 patition 的所有消息和索引文件）。
+无论消息是否被消费，kafka 都会保留所有消息。有两种策略可以删除旧数据：
+1. 基于时间：log.retention.hours=168
+2. 基于大小：log.retention.bytes=1073741824
+应用场景  日志收集
+ 用户行为数据收集
+  搭建 环境准备  三台Linux服务器：
 192.168.142.200 linux01
 192.168.142.201 linux02
 192.168.142.202 linux03
- 依赖于Zookeeper，所以需要先安装好Zookeeper  下载解压 wget http://apache.opencas.org/kafka/0.9.0.1/kafka_2.11-0.9.0.1.tgz tar -zxvf kafka_2.11-0.9.0.1.tgz  修改配置文件 #broker.id=0 每台服务器的broker.id都不能相同 log.dirs=/opt/kafka/logs/ #hostname host.name=192.168.142.200 #设置zookeeper的连接端口 zookeeper.connect=192.168.142.200:2181,192.168.142.201:2181,192.168.142.202:2181  启动服务 ./kafka-server-start.sh -daemon ../config/server.properties #检查服务是否启动 jps #创建Topic ./kafka-topics.sh --create --zookeeper 192.168.142.200:2181 --replication-factor 2 --partitions 1 --topic test #创建一个broker，发布者 ./kafka-console-producer.sh --broker-list 192.168.142.200:9092 --topic test #创建一个订阅者 ./kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning #查看topic ./kafka-topics.sh --list --zookeeper localhost:2181  开机启动 touch kafkastart.sh #创建启动脚本 chmod +x kafkastart.</description>
+ 依赖于Zookeeper，所以需要先安装好Zookeeper  下载解压 wget http://apache.opencas.org/kafka/0.9.0.1/kafka_2.11-0.9.0.1.tgz tar -zxvf kafka_2.11-0.9.0.1.tgz  修改配置文件 #broker.id=0 每台服务器的broker.id都不能相同 log.dirs=/opt/kafka/logs/ #hostname host.name=192.168.142.200 #设置zookeeper的连接端口 zookeeper.connect=192.168.142.200:2181,192.168.142.201:2181,192.168.142.202:2181  启动服务 ./kafka-server-start.sh -daemon ../config/server.properties #检查服务是否启动 jps #创建Topic .</description>
     </item>
     
     <item>
@@ -284,41 +192,6 @@ Monitor这么有名气主要是因为它是C#中资历最老，使用最广的�
 使用方法 贴一段单例的代码：
 public sealed class Singleton { private static Object s_lock = new Object(); private static Singleton uniqueInstance; private Singleton() { } public static Singleton GetSingleton() { if (uniqueInstance == null) { //保证同时只有一个线程执行以下代码块 lock (s_lock) { if (uniqueInstance == null) uniqueInstance = new Singleton(); } } return uniqueInstance; } }  C#编译器看到lock关键字会偷偷帮我们做一些事情，上面的代码等同于：
 Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqueInstance == null) uniqueInstance = new Singleton(); }finally{ if (lockTaken) Monitor.</description>
-    </item>
-    
-    <item>
-      <title>虚拟机安装记录</title>
-      <link>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Fri, 27 Jan 2017 21:07:37 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
-      <description>本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。
-下载安装文件 官网下载：https://www.centos.org/
-VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成
-安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装
-安装常用工具 yum install vim
-yum install wget
-yum install tree
-yum install lrzsz
-yum install tar
-yum install unzip
-yum install -y gcc g++ gcc-c++ make
-配置IP vim /etc/sysconfig/network-script/ifcfg-eth0
-IPADDR=192.168.91.100
-GATEWAY=192.168.91.2
-NETMASK=255.255.255.0
-BOOTPROTO=static
-设置完ip可以通过xshell连接
-修改hosts文件
-vim /etc/hosts
-192.168.91.100 linux01
-立即生效
-source etc/hosts
-设置dns
-vim /etc/resolf.cnf
-关闭防火墙
-chkconfig iptables off
-service iptables stop</description>
     </item>
     
     <item>
@@ -357,24 +230,82 @@ service iptables stop</description>
     </item>
     
     <item>
-      <title>美第奇家族</title>
-      <link>https://agchen28.github.io/blog/%E7%BE%8E%E7%AC%AC%E5%A5%87%E5%AE%B6%E6%97%8F/</link>
-      <pubDate>Sat, 31 Dec 2016 19:14:39 +0800</pubDate>
+      <title>T6670升级方案</title>
+      <link>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Tue, 29 Nov 2016 22:37:30 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/%E7%BE%8E%E7%AC%AC%E5%A5%87%E5%AE%B6%E6%97%8F/</guid>
-      <description> 打个广告 前不久刚在一本书上了解到美第奇这个家族，最近就听说出了部关于美第奇家族的新剧——美第奇家族：翡冷翠名门。
-翡冷翠是弗罗伦萨意大利语（Firenze）音译而来，最早是出自徐志摩，非常有诗意的一个译名。 最早听说弗罗伦萨这个名字应该是在看球的年纪——紫百合弗罗伦萨。
-剧跟历史相比虽然改动挺大，但还是值得推荐。 相信应该有很多人跟我一样之前都从未听闻过美第奇家族，正好借此机会了解一下这个了不起的家族。 男主角科西莫.美第奇的扮演者便是帅得一逼的少狼主萝卜，导演居然还找来了他那熟悉的岳父。 估计萝卜看到他还是会惊出一身冷汗吧，好在这次没有血色婚礼了。
-了解一下美第奇 虽然可能大部分人都没听说过美第奇家族，但一定听说过米开朗基罗，伽利略，达芬奇。可以说没有美第奇家族，可能就不会有他们。
-美第奇家族的伟大之处在于他们不只有财富和权力，他们开创了文艺复兴时代，加速了欧洲发展的进程。（写这句话很像是学生时代在答政治历史题目）
-所以说有余力还是要做一些对社会有贡献的事，想到现如今一个个高富丑都还在不择手段地捞钱，真的是令人汗颜啊。
-粗浅介绍几件事  科西莫和布鲁内莱斯基修建圣母百花大教堂的圆顶（其中有很多值得讲的故事）。这个教堂的圆顶修了16年，没有信仰与情怀的人肯定做不出这种事来。 洛伦佐对艺术和科学的支持超过了其祖父科西莫，他发现、培养并且资助了一大批艺术巨匠，包括波提切利，达芬奇和米开朗基罗等人。 发现个很有趣的事，这一家族的男性名字好像就那几个，祖孙三代经常重名。  </description>
+      <guid>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</guid>
+      <description>需求 10年买的笔记本了，U是T6670。
+主要参数：双核，2.2GHz，2M二缓，TDP35W。
+平时使用倒也没有遇到什么瓶颈，主要需求就是闲得蛋疼瞎折腾。
+先上一张鲁大娘。 方案 先看插槽和芯片组，虽然看不太懂，不过插槽类型一定要一样。
+ 同系列升级，省心方便。只看T9系列，可以考虑的有T9900、T9800、T9600等。 这几个除了主频之外都是一样的规格，6M二缓，主频逐级提升，价格也随之提高。 特别是T9900，作为该系列最顶级的U，这么多年过去了居然还敢卖三百块，简直太奸商了。 P9系列，P9700、P9600等。 跟T系列差不多的规格，该系列特点就是低温低功耗，P9600的TDP就25W。 强烈推荐，特别是考虑到功耗和散热问题。 当然同主频的价格就比T系列高得多，这两个到现在也还要一两百。 升四核。Q9000、Q9100、QX9300。 这几个应该是属于传说中的胶水四核，不过好歹也是四核。Q9100和QX9300有12M二缓。缺点高温高功耗。最大的缺点——贵。 四核真的非常诱人不过不确定装上去是否可以用，即使可以用散热估计也吃不消而且还要考虑到功耗的问题。  实施 最后，既贪心又抠门的我还是纠结地选择了主频高价格低的T系列。 咬牙掏了七十几块大洋捡了个T9600。2.8GHz主频，6M二缓，相对之前的提升应该还是挺明显的。 之所以没上T9800和T9900是因为考虑到性价比，不能让奸商得逞。 晒张照。 手上拿的这个就是T9600，下面那块沾满翔的就是老战友T6670。 搞定之后再跑一张鲁大娘。 瞬间秒杀全国百分之九的用户，还带动了其他配件性能的提升。 先来两把实况8爽一爽。
+反馈 平时使用中CPU满载的话温度会偏高，正好冬天来了可以暖手。 看来五块钱一罐的硅脂有点不够用，还得加钱上好一点的。 后悔没上P系列，不过庆幸没上T9900或者升四核。 这下可以再战三年了。</description>
+    </item>
+    
+    <item>
+      <title>771硬改775</title>
+      <link>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</link>
+      <pubDate>Sun, 20 Nov 2016 22:04:15 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</guid>
+      <description> 需求 手上有块G41主板，U是E3400。
+闲来无事，就想体验一把四核的。
+先上一张CPU-Z。
+方案  QX9000系列。这个系列属于传家宝系列，比如QX9770，4核心，3.2GHz的主频，12M二缓。
+这个CPU是该平台的老大，不过都几百年的东西了，居然还要上千块。
+ Q9000系列。例如Q9650，3GHz的主频，也不便宜300+。
+ 771硬改775的CPU。例如E5450，4核心，3GHz的主频，12M二缓。这样的规格居然只要一百来块，绝对性价比。
+不过考虑到电源的问题，我最后选择的是L5430，2.66GHz的主频只要79。平均一个核都不到20块。
+硬改的原理就是771平台的CPU只需要交换两个针脚，再打磨出一个缺口，或者剪掉775主板的防呆设计。就能插在775平台上。
+当然这种技术活不需要自己动手，直接买硬改好的，该土豪的时候还是要土豪一把。万一自己改坏了就操蛋了。
+  主角亮相 拿到手后，不得不佩服垃圾佬的折腾能力。真的是硬硬的改啊。 上机 虽说是胶水四核，不过看着这框框也爽。 </description>
+    </item>
+    
+    <item>
+      <title>Mongodb安装记录</title>
+      <link>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 08 Jun 2016 11:05:10 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/mongodb%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description>下载 https://www.mongodb.com/download-center#community
+选择相应的版本下载
+安装 mkdir mongodb cd mongodb mkdir db mkdir logs tar -zxvf mongodb-linux-x86_64-3.4.3.tgz cd mongodb-linux-x86_64-3.4.3/bin vim mongodb.conf  mongodb.conf内容：
+dbpath=/opt/mongodb/db logpath=/opt/mongodb/logs/mongodb.log port=27017 fork=true nohttpinterface=true bind_ip=192.168.142.200 #auth=true #开启用户认证  启动 /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongod --config /opt/mongodb/mongodb-linux-x86_64-3.4.3/bin/mongodb.conf  检测 ps -ef |grep mongo #检测后台进程是否存在 netstat -lntp | grep 27017 ./mongo 192.168.142.200:27017  开机启动 vim /etc/init.d/mongodb chmod +x /etc/init.d/mongodb #赋予执行权限 service mongodb start/stop chkconfig mongodb on #设为开机启动  脚本如下（看不懂）：
+#!/bin/bash # mongod - Startup script for mongod # chkconfig: 35 80 15 # description: Mongo is a scalable, document-oriented database.</description>
+    </item>
+    
+    <item>
+      <title>Redis安装记录</title>
+      <link>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 08 Jun 2016 11:04:56 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description> 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。
+mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动
+在启动脚本开头添加如下两行注释以修改其运行级别
+#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  </description>
+    </item>
+    
+    <item>
+      <title>CSharp中的委托</title>
+      <link>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</link>
+      <pubDate>Thu, 26 May 2016 09:33:54 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</guid>
+      <description>委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
+既然委托是一个类，我们就来看一下这个类中有哪些重要的方法和字段。
+//当我们定义一个委托时 internal delegate void Feedback(Int32 value); //编译器会定义一个完整的类： internal class Feedback : System.MulticastDelegate{ //构造器 public Feedback(Object @obejct,IntPtr method); //这个方法的原型和你定义的委托一样 //当在一个委托对象后面加上括号调用的时候其实就是调用Invoke方法 public virtual void Invoke(Int32 value); //以下方法实现对回调方法的异步回调 public virtual IAsyncResult BeginInvoke(Int32 value, AsyncCallback callback, Object @object); public virtual void EndInvoke(IAsyncResult result); }  所有的委托类型都派生自MulticastDelegate，MulticastDelegate又派生自System.Delegate。MulticastDelegate有三个最重要的非公共字段。
+ _target Oject类型 指出方法的对象，如果是静态方法置为null。
+ _methodPtr IntPtr类型 一个内部的整数值，CLR用它标识要回调的方法。
+ _invocationList Object类型 该字段通常为null。构造委托链时它引用一个委托数组。
+  </description>
     </item>
     
     <item>
       <title>垃圾回收器</title>
       <link>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</link>
-      <pubDate>Sun, 25 Dec 2016 11:11:42 +0800</pubDate>
+      <pubDate>Wed, 25 May 2016 11:11:42 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</guid>
       <description> 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
@@ -403,51 +334,117 @@ service iptables stop</description>
     </item>
     
     <item>
-      <title>T6670升级方案</title>
-      <link>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</link>
-      <pubDate>Tue, 29 Nov 2016 22:37:30 +0800</pubDate>
+      <title>虚拟机安装记录</title>
+      <link>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Wed, 27 Apr 2016 21:07:37 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/</guid>
-      <description>需求 10年买的笔记本了，U是T6670。
-主要参数：双核，2.2GHz，2M二缓，TDP35W。
-平时使用倒也没有遇到什么瓶颈，主要需求就是闲得蛋疼瞎折腾。
-先上一张鲁大娘。 方案 先看插槽和芯片组，虽然看不太懂，不过插槽类型一定要一样。
- 同系列升级，省心方便。只看T9系列，可以考虑的有T9900、T9800、T9600等。 这几个除了主频之外都是一样的规格，6M二缓，主频逐级提升，价格也随之提高。 特别是T9900，作为该系列最顶级的U，这么多年过去了居然还敢卖三百块，简直太奸商了。 P9系列，P9700、P9600等。 跟T系列差不多的规格，该系列特点就是低温低功耗，P9600的TDP就25W。 强烈推荐，特别是考虑到功耗和散热问题。 当然同主频的价格就比T系列高得多，这两个到现在也还要一两百。 升四核。Q9000、Q9100、QX9300。 这几个应该是属于传说中的胶水四核，不过好歹也是四核。Q9100和QX9300有12M二缓。缺点高温高功耗。最大的缺点——贵。 四核真的非常诱人不过不确定装上去是否可以用，即使可以用散热估计也吃不消而且还要考虑到功耗的问题。  实施 最后，既贪心又抠门的我还是纠结地选择了主频高价格低的T系列。 咬牙掏了七十几块大洋捡了个T9600。2.8GHz主频，6M二缓，相对之前的提升应该还是挺明显的。 之所以没上T9800和T9900是因为考虑到性价比，不能让奸商得逞。 晒张照。 手上拿的这个就是T9600，下面那块沾满翔的就是老战友T6670。 搞定之后再跑一张鲁大娘。 瞬间秒杀全国百分之九的用户，还带动了其他配件性能的提升。 先来两把实况8爽一爽。
-反馈 平时使用中CPU满载的话温度会偏高，正好冬天来了可以暖手。 看来五块钱一罐的硅脂有点不够用，还得加钱上好一点的。 后悔没上P系列，不过庆幸没上T9900或者升四核。 这下可以再战三年了。</description>
+      <guid>https://agchen28.github.io/blog/%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</guid>
+      <description>本编记录用VMware虚拟机安装CentOS6.8，以及一些常用工具，以作备忘。
+下载安装文件 官网下载：https://www.centos.org/
+VM创建新的虚拟机 选择典型-&amp;gt;稍后安装操作系统-&amp;gt;选择linux，设置CentOS 64位-&amp;gt; 填写虚拟机名称-&amp;gt;设置CD/DVD路径，选择使用ISO映像文件-&amp;gt;一路默认直到完成
+安装操作系统 开启虚拟机-&amp;gt;进入安装程序-&amp;gt;选择skip-&amp;gt;选择简体中文-&amp;gt;一路下一步-&amp;gt; 设置主机名-&amp;gt;配置网络，编辑，勾选自动连接-&amp;gt;继续下一步-&amp;gt;设置root密码-&amp;gt; 点击下一步开始安装
+安装常用工具 yum install vim
+yum install wget
+yum install tree
+yum install lrzsz
+yum install tar
+yum install unzip
+yum install -y gcc g++ gcc-c++ make
+配置IP vim /etc/sysconfig/network-script/ifcfg-eth0
+IPADDR=192.168.91.100
+GATEWAY=192.168.91.2
+NETMASK=255.255.255.0
+BOOTPROTO=static
+设置完ip可以通过xshell连接
+修改hosts文件
+vim /etc/hosts
+192.168.91.100 linux01
+立即生效
+source etc/hosts
+设置dns
+vim /etc/resolf.cnf
+关闭防火墙
+chkconfig iptables off
+service iptables stop</description>
     </item>
     
     <item>
-      <title>CSharp中的委托</title>
-      <link>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</link>
-      <pubDate>Sat, 26 Nov 2016 09:33:54 +0800</pubDate>
+      <title>泛型</title>
+      <link>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</link>
+      <pubDate>Wed, 27 Apr 2016 11:33:01 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</guid>
-      <description>委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
-既然委托是一个类，我们就来看一下这个类中有哪些重要的方法和字段。
-//当我们定义一个委托时 internal delegate void Feedback(Int32 value); //编译器会定义一个完整的类： internal class Feedback : System.MulticastDelegate{ //构造器 public Feedback(Object @obejct,IntPtr method); //这个方法的原型和你定义的委托一样 //当在一个委托对象后面加上括号调用的时候其实就是调用Invoke方法 public virtual void Invoke(Int32 value); //以下方法实现对回调方法的异步回调 public virtual IAsyncResult BeginInvoke(Int32 value, AsyncCallback callback, Object @object); public virtual void EndInvoke(IAsyncResult result); }  所有的委托类型都派生自MulticastDelegate，MulticastDelegate又派生自System.Delegate。MulticastDelegate有三个最重要的非公共字段。
- _target Oject类型 指出方法的对象，如果是静态方法置为null。
- _methodPtr IntPtr类型 一个内部的整数值，CLR用它标识要回调的方法。
- _invocationList Object类型 该字段通常为null。构造委托链时它引用一个委托数组。
-  </description>
+      <guid>https://agchen28.github.io/blog/%E6%B3%9B%E5%9E%8B/</guid>
+      <description>许多原因促成了泛型的出现，最引人注目的一个原因就是为了创建容器类，利用泛型就可以指定容器内要持有什么样的对象。
+泛型就是参数化的类型，使代码可以应用于多种类型。
+Java中的泛型 Java SE5引入了泛型。
+了解一下Java是如何实现泛型的，以及为何采用这种设计方案。
+实现方案 看个例子：
+public class Test { public static void main(String[] args) { Class c1 = new ArrayList&amp;lt;Integer&amp;gt;().getClass(); Class c2 = new ArrayList&amp;lt;String&amp;gt;().getClass(); System.out.println(c1 == c2);//true System.out.println(c1.toString());//class java.util.ArrayList System.out.println(c2.toString());//class java.util.ArrayList } }  我们会发现ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;在运行时被认为是相同的类型，事实上它们在运行时就是相同的类型。
+Java采用擦除来实现泛型。
+ArrayList&amp;lt;Integer&amp;gt;和ArrayList&amp;lt;String&amp;gt;这两种形式都被擦除成它们的“原生”类型，即ArrayList。
+Java泛型的核心概念：告诉编译器想使用什么类型，然后编译器帮你处理一切细节。
+就个人愚见，Java的泛型概念只存在于Java编译器，它令我们有使用泛型的感觉，对于运行时来说它根本不知道泛型是什么鬼东西。
+采用这种设计方案的原因 因为泛型不是在Java语言出现就有的组成部分，所以把泛型加入到Java中需要考虑一些兼容性问题。
+Java泛型不仅必须支持向后兼容性，而且还要支持“迁移兼容性”。为了不破坏现有类库的情况下将泛型融入Java语言，Java的设计者们和从事此问题相关工作的各个团队决策认为擦除是唯一可行的解决方案。这是一种折中的不得已而为之的实现方案。
+“迁移兼容性”：
+要使得泛化的客户端可以用非泛化的类库来使用，反之亦然，这被称为“迁移兼容性”。
+.NET中的泛型 来看一下.NET中如何实现泛型。
+泛型也不是.NET一出现就有的，在CLR2.0中被加入。
+开放类型与封闭类型 我们知道，CLR会为应用程序使用到的各种类型在托管堆上创建所谓的类型对象。
+具有泛型参数的类型也是类型，同样会有自己的类型对象。
+ 开放类型
+具有泛型类型参数的类型称为开放类型，CLR禁止构造开放类型的任何实例。这类似与禁止构造接口类型的实例。（即使通过反射也没办法）
+ 封闭类型
+为所有类型参数都传递了实际的数据类型，类型就会成为封闭类型。封闭类型是可以用来构造实例的。
+如果只传递了部分类型参数，会创建新的开放类型对象。
+  至此我们可以明白，CLR根据类型参数为每个泛型创建不同的类型对象，所以在运行时，每个泛型都有自己的具体类型。.NET中的这种实现方式使得泛型是一个纯粹的泛型。
+代码爆炸 这是.NET中泛型实现方式的一个缺点。
+使用泛型类型参数的方法，在进行JIT编译时，CLR要为每种不同的方法/类型组合生成本机代码，这种现象成为代码爆炸。
+两个优化：
+CLR只会为一个方法/类型组合编译一次代码。</description>
     </item>
     
     <item>
-      <title>771硬改775</title>
-      <link>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</link>
-      <pubDate>Sun, 20 Nov 2016 22:04:15 +0800</pubDate>
+      <title>JavaScript中的function</title>
+      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</link>
+      <pubDate>Sat, 23 Apr 2016 08:50:12 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/771%E7%A1%AC%E6%94%B9775/</guid>
-      <description> 需求 手上有块G41主板，U是E3400。
-闲来无事，就想体验一把四核的。
-先上一张CPU-Z。
-方案  QX9000系列。这个系列属于传家宝系列，比如QX9770，4核心，3.2GHz的主频，12M二缓。
-这个CPU是该平台的老大，不过都几百年的东西了，居然还要上千块。
- Q9000系列。例如Q9650，3GHz的主频，也不便宜300+。
- 771硬改775的CPU。例如E5450，4核心，3GHz的主频，12M二缓。这样的规格居然只要一百来块，绝对性价比。
-不过考虑到电源的问题，我最后选择的是L5430，2.66GHz的主频只要79。平均一个核都不到20块。
-硬改的原理就是771平台的CPU只需要交换两个针脚，再打磨出一个缺口，或者剪掉775主板的防呆设计。就能插在775平台上。
-当然这种技术活不需要自己动手，直接买硬改好的，该土豪的时候还是要土豪一把。万一自己改坏了就操蛋了。
-  主角亮相 拿到手后，不得不佩服垃圾佬的折腾能力。真的是硬硬的改啊。 上机 虽说是胶水四核，不过看着这框框也爽。 </description>
+      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</guid>
+      <description>JavaScript设计得最出色的就是它的函数的实现。它几乎近于完美。&amp;ndash;Douglas Crockford
+第一类值（first-class values） JavaScript中的函数就是对象。
+可以使用对象的地方都可以使用函数。
+比如可以赋值给变量，保存在其他对象中，可以作为函数的参数或者作为函数的返回值。
+函数跟其他对象不一样的地方在于可以在它后面加个括号调用它。
+据我了解，函数作为第一类值的语言还有Go，Lua。这种设计使得函数使用起来非常灵活。
+C#中实现方法的传递 方法与函数的区别以我的理解来说，方法是面向对象中对于函数的说法，当一个函数属于一个对象，该函数就称为该对象的方法。
+由于C#和Java属于完全面向对象编程语言，所有的函数都是某个对象的方法，即使静态方法也是属于某个类型对象的方法。
+所谓编程，就是将一组需求分解成一组函数和数据结构的技能。
+那么所谓面向对象编程，就是将一组需求分解成一组对象，对象中就包含与本身相关的数据和用来操作数据的方法。
+C#中通过委托（delegate）来实现类似的操作。
+委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
+调用  方法调用模式
+当一个函数属于一个对象时，我们通过使用该对象的点操作符来调用该函数，这种调用方式就是方法调用模式。
+方法内部的this会被绑定到该对象，这个绑定是在调用的时候发生。
+var myObject = { value: 0, incrament: function (inc) { this.value += typeof inc === &#39;number&#39; ? inc : 1; } }; myObject.increment(); document.writeln(myObject.value);//1 myObject.increment(2); document.writeln(myObject.value);//3  函数调用模式
+当一个函数并非一个对象的属性时，那么它就是被当作一个函数来调用。
+此模式调用函数时，this被绑定到全局对象。这是语言设计上的一个错误。倘若语言设计正确，那么当内部函数被调用时，this应该仍然绑定到外部函数的this变量。（Douglas Crockford大神的原话）
+看解决方案：
+//给myObject增加一个double方法。 myObject.double = function () { var that = this; var helper = function () { that.</description>
+    </item>
+    
+    <item>
+      <title>JavaScript中的对象</title>
+      <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</link>
+      <pubDate>Thu, 21 Apr 2016 09:34:12 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</guid>
+      <description>在JavaScript中，数组是对象，函数是对象，正则表达式是对象，当然，对象自然也是对象。
+JavaScript里的对象是无类型（class-free）的。它对新属性的名字和属性的值没有限制。
+原型（prototype）  原型对象
+每个对象都链接到一个原型对象，并且它可以从中继承属性（听起来是不是像CLR中的类型对象）。所有通过对象字面量创建的对象都连接到Object.prototype,它是JavaScript中的标配对象。
+原型链接在更新时是不起作用的。当我们对某个对象做出改变时，不会触及改对象的原型。
+原型链接只有在检索值的时候才被用到。如果我们尝试去获取对象的某个属性值，但该对象没有此属性名，那么JavaScript会试着从原型对象中获取属性值。如果那个原型对象也没有该属性，那么再从它的原型中找，依次类推，知道该过程最后到达终点Object.prototype。如果想要的属性完全不存在于原型链中，那么结果就是undefined值。
+原型关系是一种动态的关系。如果我们添加一个新的属性到原型中，该属性会立即对所有基于该原型创建的对象可见。  //这种继承方式被称作原型式继承 //通过修改对象的原型对象来实现 if (typeof Object.create !== &#39;function&#39;) { Object.create = function (o) { var F = function () { }; F.prototype = o; return new F(); }; } var another_stooge = Object.create(stooge);   构造函数、原型对象与实例对象之间的关系  function SuperType() { this.property = true; } SuperType.prototype.getSuperValue = function () { return this.property; }; function SubType() { this.subproperty = false; } //继承了SuperType SubType.</description>
     </item>
     
   </channel>

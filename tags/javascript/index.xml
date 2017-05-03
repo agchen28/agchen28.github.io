@@ -6,7 +6,7 @@
     <description>Recent content in Javascript on agchen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 21 Mar 2017 08:50:12 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 23 Apr 2016 08:50:12 +0800</lastBuildDate>
     
 	<atom:link href="https://agchen28.github.io/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>JavaScript中的function</title>
       <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</link>
-      <pubDate>Tue, 21 Mar 2017 08:50:12 +0800</pubDate>
+      <pubDate>Sat, 23 Apr 2016 08:50:12 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84function/</guid>
       <description>JavaScript设计得最出色的就是它的函数的实现。它几乎近于完美。&amp;ndash;Douglas Crockford
@@ -42,7 +42,7 @@ var myObject = { value: 0, incrament: function (inc) { this.value += typeof inc 
     <item>
       <title>JavaScript中的对象</title>
       <link>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</link>
-      <pubDate>Tue, 21 Feb 2017 09:34:12 +0800</pubDate>
+      <pubDate>Thu, 21 Apr 2016 09:34:12 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/javascript%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1/</guid>
       <description>在JavaScript中，数组是对象，函数是对象，正则表达式是对象，当然，对象自然也是对象。
