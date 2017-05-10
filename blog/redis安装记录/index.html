@@ -16,21 +16,21 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
     <title>Redis安装记录 - agchen</title>
     
-<meta name="description" content=" 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
+<meta name="description" content=" Redis简介 Redis是一个开源的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。Redis优点  速度快 支持丰富的数据类型: Redis支持最大多数开发人员已经知道如列表、集合、可排序集合、哈希等数据类型。 操作都是原子的：所有 Redis的操作都是原子，从而确保当两个客户同时访问Redis服务器得到的是更新后的值。  下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
 
 <meta property="og:title" content="Redis安装记录 - agchen">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
 <meta property="og:image" content="https://agchen28.github.io/images/default.png">
 <meta property="og:site_name" content="agchen">
-<meta property="og:description" content=" 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
+<meta property="og:description" content=" Redis简介 Redis是一个开源的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。Redis优点  速度快 支持丰富的数据类型: Redis支持最大多数开发人员已经知道如列表、集合、可排序集合、哈希等数据类型。 操作都是原子的：所有 Redis的操作都是原子，从而确保当两个客户同时访问Redis服务器得到的是更新后的值。  下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
 <meta property="og:locale" content="ja_JP">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="agchen">
 <meta name="twitter:url" content="https://agchen28.github.io/blog/redis%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
 <meta name="twitter:title" content="Redis安装记录 - agchen">
-<meta name="twitter:description" content=" 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
+<meta name="twitter:description" content=" Redis简介 Redis是一个开源的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。Redis优点  速度快 支持丰富的数据类型: Redis支持最大多数开发人员已经知道如列表、集合、可排序集合、哈希等数据类型。 操作都是原子的：所有 Redis的操作都是原子，从而确保当两个客户同时访问Redis服务器得到的是更新后的值。  下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动在启动脚本开头添加如下两行注释以修改其运行级别#!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  ">
 <meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
 
 
@@ -65,7 +65,11 @@
         "height": 60
       }
     },
-    "description": " 下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。
+    "description": " Redis简介 Redis是一个开源的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。
+Redis优点  速度快
+ 支持丰富的数据类型: Redis支持最大多数开发人员已经知道如列表、集合、可排序集合、哈希等数据类型。
+ 操作都是原子的：所有 Redis的操作都是原子，从而确保当两个客户同时访问Redis服务器得到的是更新后的值。
+  下载安装 wget http://download.redis.io/releases/redis-3.2.8.tar.gz tar xzf redis-3.2.8.tar.gz cd redis-3.2.8 make #可使用root用户执行`make install`，将可执行文件拷贝到/usr/local/bin目录下。这样就可以直接敲名字运行程序了。 make install  设置开机启动 启动脚本 redis_init_script 位于Redis的 /utils/ 目录下。 - 根据启动脚本要求，将修改好的配置文件以端口为名复制一份到指定目录。需使用root用户。
 mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:ip地址 port：端口号。默认6379 requirepass:设置密码 slaveof：从服务器需要配置 masterauth：主服务器的密码   将启动脚本复制到/etc/init.d目录下，本例将启动脚本命名为redisd（通常都以d结尾表示是后台自启动服务）。  cp redis_init_script /etc/init.d/redisd   设置为开机自启动
 在启动脚本开头添加如下两行注释以修改其运行级别
 #!/bin/sh # chkconfig: 2345 90 10 # description: Redis is a persistent key-value database#  #设置为开机自启动服务 chkconfig redisd on #打开服务 service redisd start #关闭服务 service redisd stop   检测 ps -ef |grep redis #检测后台进程是否存在 netstat -lntp | grep 6379 #检测6379端口是否在监听 redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常  "
@@ -152,6 +156,20 @@ mkdir /etc/redis cp redis.conf /etc/redis/6379.conf   修改配置文件  bind:i
   
 
   <div class="article-body">
+
+<h3 id="redis简介">Redis简介</h3>
+
+<p>Redis是一个开源的，内存中的数据结构存储系统，它可以用作数据库、缓存和消息中间件。</p>
+
+<h4 id="redis优点">Redis优点</h4>
+
+<ul>
+<li><p>速度快</p></li>
+
+<li><p>支持丰富的数据类型: Redis支持最大多数开发人员已经知道如列表、集合、可排序集合、哈希等数据类型。</p></li>
+
+<li><p>操作都是原子的：所有 Redis的操作都是原子，从而确保当两个客户同时访问Redis服务器得到的是更新后的值。</p></li>
+</ul>
 
 <h3 id="下载安装">下载安装</h3>
 
@@ -242,6 +260,8 @@ redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常
       
       <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
       
+      <a href="https://agchen28.github.io/tags/redis" class="list-group-item">redis</a>
+      
       <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
       
       <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
@@ -249,6 +269,8 @@ redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常
       <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
       
       <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/spring" class="list-group-item">spring</a>
       
       <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
       
@@ -266,6 +288,10 @@ redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常
       
       <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
       
+      <a href="https://agchen28.github.io/blog/lock/" class="list-group-item">lock</a>
+      
+      <a href="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/" class="list-group-item">线程同步构造</a>
+      
       <a href="https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">dotnet程序执行过程</a>
       
       <a href="https://agchen28.github.io/blog/%E5%B9%B6%E5%8F%91%E5%9E%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/" class="list-group-item">并发型服务器的实现方式</a>
@@ -278,11 +304,7 @@ redis_cli -a 123456 #使用`redis-cli`客户端检测连接是否正常
       
       <a href="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Zookeeper集群搭建</a>
       
-      <a href="https://agchen28.github.io/blog/lock/" class="list-group-item">lock</a>
-      
-      <a href="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/" class="list-group-item">线程同步构造</a>
-      
-      <a href="https://agchen28.github.io/blog/t6670%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88/" class="list-group-item">T6670升级方案</a>
+      <a href="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" class="list-group-item">垃圾回收器</a>
       
     </div>
   </section>

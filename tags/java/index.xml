@@ -26,7 +26,7 @@
     <item>
       <title>垃圾回收器</title>
       <link>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</link>
-      <pubDate>Wed, 25 May 2016 11:11:42 +0800</pubDate>
+      <pubDate>Tue, 13 Dec 2016 11:11:42 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</guid>
       <description> 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
@@ -52,6 +52,21 @@
  继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。
  如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。
   </description>
+    </item>
+    
+    <item>
+      <title>SpringBoot搭建项目</title>
+      <link>https://agchen28.github.io/blog/springboot%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</link>
+      <pubDate>Sun, 09 Oct 2016 13:04:32 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/springboot%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</guid>
+      <description>Srping Boot简介 Spring Boot就是Spring一些库的集合，用来简化Spring应用的搭建及开发。
+特点  配置简单
+ 内嵌tomcat，可以直接打成jar包运行
+  搭建demo 根据官方文档，快速搭建Spring Boot项目 http://projects.spring.io/spring-boot/
+ 添加Maven依赖
+  &amp;lt;parent&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.5.0.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/parent&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt;   编写控制器
+  @RestController public class HelloController { @RequestMapping(value = {&amp;quot;/hello&amp;quot;, &amp;quot;/hi&amp;quot;}, method = RequestMethod.GET) public String say() { return &amp;quot;Hello&amp;quot;; } }   Spring应用启动类  import org.springframework.boot.SpringApplication; import org.springframework.boot.autoconfigure.SpringBootApplication; @SpringBootApplication public class Application { public static void main(String[] args) { SpringApplication.</description>
     </item>
     
     <item>

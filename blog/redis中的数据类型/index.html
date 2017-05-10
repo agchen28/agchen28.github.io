@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>Redis中的数据类型 - agchen</title>
+    
+<meta name="description" content="Redis中的数据类型包括：String、Hash、List、Set、SortedSet。String 可以用来存放字符串或者数值类型，对于数值类型可以进行增加或减少操作。实现一个简单的分布式锁 客户端执行命令：SET resource-name anystring NX EX max-lock-time  如果服务端返回OK，那么获得锁。如果返回nil，请稍后再试。计数器和限速器 使用 INCR 命令来统计用户一个时间段的操作次数，限速器可以用来限制一个公开API在一个时间段内的请求次数。Bitmap Bitmap 对于一些特定类型的计算非常有效。比如需要记录用户每天是否上线，计算总共上线天数，就可以使用 SETBIT 和 BITCOUNT 来实现。假设我们需要为每个用户记录一个特殊属性，例如是否活跃用户，是否黑名单用户。我们可以将属性值作为key，用户id作为偏移量，通过 SETBIT 和 GETBIT 命令来实现。Hash 也可以用来存储字符串和数值类型，数值类型可以增减操作。适合用来存储对象，每个key下面的field对应该对象的一个属性，对该对象任一个属性读写操作的时间复杂度都是O(1)。使用 HMGET 和 HMSET 命令可以读写多个field，时间复杂度为O(N)，N是给定的field数量。使用 HGETALL 命令会返回该hash的所有field和value，时间复杂度是O(N)，N为该hash的大小。List List是有序的列表，支持双端操作，还有阻塞的操作，可以用来实现阻塞队列。事件提醒 我们经常会使用轮询的方式来查询List中是否有新元素达到。 另一种更好的方式是，使用 BLPOP 或者 BRPOP ，在新元素到达时立即进行处理，而新元素还没到达时，就一直阻塞住，避免轮询占用资源。安全队列 使用 RPOPLPUSH 命令(或者它的阻塞版本 BRPOPLPUSH )实现安全队列。该命令返回一个消息，并把该消息塞入一个备份列表中，当消息处理成功后再用 LREM 命令将这个消息从备份表删除。循环列表 给 RPOPLPUSH 命令的两个参数传入相同的key，可以不停地循环取出该列表中的元素。循环列表可以应用在服务器的监控程序，不停地监控一组服务是否正常工作。Set set为无序，且不重复的集合，且提供O(1)复杂度度的快速查找。set集合支持集合的并，交，差操作。SortedSet 可排序的集合，根据score进行排序，如果两个score相同，则按照value的字典序排序。">
+
+<meta property="og:title" content="Redis中的数据类型 - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="Redis中的数据类型包括：String、Hash、List、Set、SortedSet。String 可以用来存放字符串或者数值类型，对于数值类型可以进行增加或减少操作。实现一个简单的分布式锁 客户端执行命令：SET resource-name anystring NX EX max-lock-time  如果服务端返回OK，那么获得锁。如果返回nil，请稍后再试。计数器和限速器 使用 INCR 命令来统计用户一个时间段的操作次数，限速器可以用来限制一个公开API在一个时间段内的请求次数。Bitmap Bitmap 对于一些特定类型的计算非常有效。比如需要记录用户每天是否上线，计算总共上线天数，就可以使用 SETBIT 和 BITCOUNT 来实现。假设我们需要为每个用户记录一个特殊属性，例如是否活跃用户，是否黑名单用户。我们可以将属性值作为key，用户id作为偏移量，通过 SETBIT 和 GETBIT 命令来实现。Hash 也可以用来存储字符串和数值类型，数值类型可以增减操作。适合用来存储对象，每个key下面的field对应该对象的一个属性，对该对象任一个属性读写操作的时间复杂度都是O(1)。使用 HMGET 和 HMSET 命令可以读写多个field，时间复杂度为O(N)，N是给定的field数量。使用 HGETALL 命令会返回该hash的所有field和value，时间复杂度是O(N)，N为该hash的大小。List List是有序的列表，支持双端操作，还有阻塞的操作，可以用来实现阻塞队列。事件提醒 我们经常会使用轮询的方式来查询List中是否有新元素达到。 另一种更好的方式是，使用 BLPOP 或者 BRPOP ，在新元素到达时立即进行处理，而新元素还没到达时，就一直阻塞住，避免轮询占用资源。安全队列 使用 RPOPLPUSH 命令(或者它的阻塞版本 BRPOPLPUSH )实现安全队列。该命令返回一个消息，并把该消息塞入一个备份列表中，当消息处理成功后再用 LREM 命令将这个消息从备份表删除。循环列表 给 RPOPLPUSH 命令的两个参数传入相同的key，可以不停地循环取出该列表中的元素。循环列表可以应用在服务器的监控程序，不停地监控一组服务是否正常工作。Set set为无序，且不重复的集合，且提供O(1)复杂度度的快速查找。set集合支持集合的并，交，差操作。SortedSet 可排序的集合，根据score进行排序，如果两个score相同，则按照value的字典序排序。">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/redis%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+<meta name="twitter:title" content="Redis中的数据类型 - agchen">
+<meta name="twitter:description" content="Redis中的数据类型包括：String、Hash、List、Set、SortedSet。String 可以用来存放字符串或者数值类型，对于数值类型可以进行增加或减少操作。实现一个简单的分布式锁 客户端执行命令：SET resource-name anystring NX EX max-lock-time  如果服务端返回OK，那么获得锁。如果返回nil，请稍后再试。计数器和限速器 使用 INCR 命令来统计用户一个时间段的操作次数，限速器可以用来限制一个公开API在一个时间段内的请求次数。Bitmap Bitmap 对于一些特定类型的计算非常有效。比如需要记录用户每天是否上线，计算总共上线天数，就可以使用 SETBIT 和 BITCOUNT 来实现。假设我们需要为每个用户记录一个特殊属性，例如是否活跃用户，是否黑名单用户。我们可以将属性值作为key，用户id作为偏移量，通过 SETBIT 和 GETBIT 命令来实现。Hash 也可以用来存储字符串和数值类型，数值类型可以增减操作。适合用来存储对象，每个key下面的field对应该对象的一个属性，对该对象任一个属性读写操作的时间复杂度都是O(1)。使用 HMGET 和 HMSET 命令可以读写多个field，时间复杂度为O(N)，N是给定的field数量。使用 HGETALL 命令会返回该hash的所有field和value，时间复杂度是O(N)，N为该hash的大小。List List是有序的列表，支持双端操作，还有阻塞的操作，可以用来实现阻塞队列。事件提醒 我们经常会使用轮询的方式来查询List中是否有新元素达到。 另一种更好的方式是，使用 BLPOP 或者 BRPOP ，在新元素到达时立即进行处理，而新元素还没到达时，就一直阻塞住，避免轮询占用资源。安全队列 使用 RPOPLPUSH 命令(或者它的阻塞版本 BRPOPLPUSH )实现安全队列。该命令返回一个消息，并把该消息塞入一个备份列表中，当消息处理成功后再用 LREM 命令将这个消息从备份表删除。循环列表 给 RPOPLPUSH 命令的两个参数传入相同的key，可以不停地循环取出该列表中的元素。循环列表可以应用在服务器的监控程序，不停地监控一组服务是否正常工作。Set set为无序，且不重复的集合，且提供O(1)复杂度度的快速查找。set集合支持集合的并，交，差操作。SortedSet 可排序的集合，根据score进行排序，如果两个score相同，则按照value的字典序排序。">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "Redis中的数据类型 - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2016-07-09T12:55:43JST",
+    "dateModified": "2016-07-09T12:55:43JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "Redis中的数据类型包括：String、Hash、List、Set、SortedSet。
+String 可以用来存放字符串或者数值类型，对于数值类型可以进行增加或减少操作。
+实现一个简单的分布式锁 客户端执行命令：
+SET resource-name anystring NX EX max-lock-time  如果服务端返回OK，那么获得锁。如果返回nil，请稍后再试。
+计数器和限速器 使用 INCR 命令来统计用户一个时间段的操作次数，限速器可以用来限制一个公开API在一个时间段内的请求次数。
+Bitmap Bitmap 对于一些特定类型的计算非常有效。
+比如需要记录用户每天是否上线，计算总共上线天数，就可以使用 SETBIT 和 BITCOUNT 来实现。
+假设我们需要为每个用户记录一个特殊属性，例如是否活跃用户，是否黑名单用户。我们可以将属性值作为key，用户id作为偏移量，通过 SETBIT 和 GETBIT 命令来实现。
+Hash 也可以用来存储字符串和数值类型，数值类型可以增减操作。
+适合用来存储对象，每个key下面的field对应该对象的一个属性，对该对象任一个属性读写操作的时间复杂度都是O(1)。
+使用 HMGET 和 HMSET 命令可以读写多个field，时间复杂度为O(N)，N是给定的field数量。
+使用 HGETALL 命令会返回该hash的所有field和value，时间复杂度是O(N)，N为该hash的大小。
+List List是有序的列表，支持双端操作，还有阻塞的操作，可以用来实现阻塞队列。
+事件提醒 我们经常会使用轮询的方式来查询List中是否有新元素达到。 另一种更好的方式是，使用 BLPOP 或者 BRPOP ，在新元素到达时立即进行处理，而新元素还没到达时，就一直阻塞住，避免轮询占用资源。
+安全队列 使用 RPOPLPUSH 命令(或者它的阻塞版本 BRPOPLPUSH )实现安全队列。该命令返回一个消息，并把该消息塞入一个备份列表中，当消息处理成功后再用 LREM 命令将这个消息从备份表删除。
+循环列表 给 RPOPLPUSH 命令的两个参数传入相同的key，可以不停地循环取出该列表中的元素。
+循环列表可以应用在服务器的监控程序，不停地监控一组服务是否正常工作。
+Set set为无序，且不重复的集合，且提供O(1)复杂度度的快速查找。set集合支持集合的并，交，差操作。
+SortedSet 可排序的集合，根据score进行排序，如果两个score相同，则按照value的字典序排序。"
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">Redis中的数据类型</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2016-07-09T12:55:43JST">2016年07月09日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">Redis中的数据类型</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<p>Redis中的数据类型包括：String、Hash、List、Set、SortedSet。</p>
+
+<h3 id="string">String</h3>
+
+<p>可以用来存放字符串或者数值类型，对于数值类型可以进行增加或减少操作。</p>
+
+<h4 id="实现一个简单的分布式锁">实现一个简单的分布式锁</h4>
+
+<p>客户端执行命令：</p>
+
+<pre><code>SET resource-name anystring NX EX max-lock-time
+</code></pre>
+
+<p>如果服务端返回OK，那么获得锁。如果返回nil，请稍后再试。</p>
+
+<h4 id="计数器和限速器">计数器和限速器</h4>
+
+<p>使用 INCR 命令来统计用户一个时间段的操作次数，限速器可以用来限制一个公开API在一个时间段内的请求次数。</p>
+
+<h4 id="bitmap">Bitmap</h4>
+
+<p>Bitmap 对于一些特定类型的计算非常有效。<br />
+比如需要记录用户每天是否上线，计算总共上线天数，就可以使用 SETBIT 和 BITCOUNT 来实现。<br />
+假设我们需要为每个用户记录一个特殊属性，例如是否活跃用户，是否黑名单用户。我们可以将属性值作为key，用户id作为偏移量，通过 SETBIT 和 GETBIT 命令来实现。</p>
+
+<h3 id="hash">Hash</h3>
+
+<p>也可以用来存储字符串和数值类型，数值类型可以增减操作。<br />
+适合用来存储对象，每个key下面的field对应该对象的一个属性，对该对象任一个属性读写操作的时间复杂度都是O(1)。<br />
+使用 HMGET 和 HMSET 命令可以读写多个field，时间复杂度为O(N)，N是给定的field数量。<br />
+使用 HGETALL 命令会返回该hash的所有field和value，时间复杂度是O(N)，N为该hash的大小。</p>
+
+<h3 id="list">List</h3>
+
+<p>List是有序的列表，支持双端操作，还有阻塞的操作，可以用来实现阻塞队列。</p>
+
+<h4 id="事件提醒">事件提醒</h4>
+
+<p>我们经常会使用轮询的方式来查询List中是否有新元素达到。
+另一种更好的方式是，使用 BLPOP 或者 BRPOP ，在新元素到达时立即进行处理，而新元素还没到达时，就一直阻塞住，避免轮询占用资源。</p>
+
+<h4 id="安全队列">安全队列</h4>
+
+<p>使用 RPOPLPUSH 命令(或者它的阻塞版本 BRPOPLPUSH )实现安全队列。该命令返回一个消息，并把该消息塞入一个备份列表中，当消息处理成功后再用 LREM 命令将这个消息从备份表删除。</p>
+
+<h4 id="循环列表">循环列表</h4>
+
+<p>给 RPOPLPUSH 命令的两个参数传入相同的key，可以不停地循环取出该列表中的元素。<br />
+循环列表可以应用在服务器的监控程序，不停地监控一组服务是否正常工作。</p>
+
+<h3 id="set">Set</h3>
+
+<p>set为无序，且不重复的集合，且提供O(1)复杂度度的快速查找。set集合支持集合的并，交，差操作。</p>
+
+<h3 id="sortedset">SortedSet</h3>
+
+<p>可排序的集合，根据score进行排序，如果两个score相同，则按照value的字典序排序。</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/dotnet" class="list-group-item">dotnet</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/redis" class="list-group-item">redis</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/spring" class="list-group-item">spring</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/lock/" class="list-group-item">lock</a>
+      
+      <a href="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/" class="list-group-item">线程同步构造</a>
+      
+      <a href="https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">dotnet程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%B9%B6%E5%8F%91%E5%9E%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/" class="list-group-item">并发型服务器的实现方式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/kafka%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Kafka集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Zookeeper集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" class="list-group-item">垃圾回收器</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+

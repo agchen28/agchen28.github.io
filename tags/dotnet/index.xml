@@ -24,25 +24,9 @@
     </item>
     
     <item>
-      <title>dotnet程序执行过程</title>
-      <link>https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</link>
-      <pubDate>Thu, 23 Feb 2017 11:05:53 +0800</pubDate>
-      
-      <guid>https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</guid>
-      <description>码几行代码 internal class Employee { public Int32 GetYearsEmployed() {...} public virtual String GetProgressReport() {...} public static Employee Lookup(String name) {...} } internal class Manager : Employee { public override string GetProgressReport() {...} }  void M3() { Employee e; Int32 year; e = new Manager(); e = Employee.Lookup(&amp;quot;joe&amp;quot;); year = e.GetYearsEmployed(); e.GetProgressReport(); }  执行过程 初始化： 启动Windows进程，加载CLR，初始化托管堆，创建一个线程并分配1M的线程栈。（如下图：左侧矩形为线程栈，顶部灰色部分加三个点表示已经执行过一些代码。右侧一大坨表示托管堆，M3方法未执行前可能会有其他对象，我们暂且不管。） 调用M3方法： 调用M3方法的时候，CLR会在托管堆上创建M3方法中所需要的类型对象。在这里我们用到Employee，Manager，Int32和String。但Int32和String是常用类型，我们假定它们已经在其他方法中创建了。 关于类型对象：
-类型对象就是运行时用来表示该类型的一个对象，这个对象包含一些静态字段。
-可以结合实例对象来理解类型对象，实例对象是我们通过调用构造函数创建的对象，类型对象则是CLR自动调用静态构造函数创建的对象（换句话说，我们平时写的静态构造函数就是用来构造这个类型对象的），在一个托管堆中每个类型只有唯一一个类型对象。
- 类型对象指针。每个托管堆上的对象都有的东西。
-实例对象的类型对象指针会指到它对应的类型对象上。
-类型对象的类型对象指针会指到System.Type类型对象上（这是一个特殊的类型对象，Type类型对象的类型对象指针会指向本身）。
-System.Object的GetType方法就是返回存储在指定对象的类型对象指针中的地址。
- 同步块索引。也是每个托管堆上的对象都有的东西。</description>
-    </item>
-    
-    <item>
       <title>lock</title>
       <link>https://agchen28.github.io/blog/lock/</link>
-      <pubDate>Sat, 28 Jan 2017 16:24:53 +0800</pubDate>
+      <pubDate>Sat, 18 Mar 2017 16:24:53 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/lock/</guid>
       <description>说到c#中的锁，可能有些人只知道lock这个东西。其实lock是c#编译器提供给Monitor类的专属关键字。
@@ -56,7 +40,7 @@ Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqu
     <item>
       <title>线程同步构造</title>
       <link>https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/</link>
-      <pubDate>Wed, 25 Jan 2017 11:13:00 +0800</pubDate>
+      <pubDate>Thu, 02 Mar 2017 11:13:00 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/</guid>
       <description>这个主题涉及内容太多，只能先简单介绍一下。
@@ -89,24 +73,25 @@ Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqu
     </item>
     
     <item>
-      <title>CSharp中的委托</title>
-      <link>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</link>
-      <pubDate>Thu, 26 May 2016 09:33:54 +0800</pubDate>
+      <title>dotnet程序执行过程</title>
+      <link>https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Thu, 23 Feb 2017 11:05:53 +0800</pubDate>
       
-      <guid>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</guid>
-      <description>委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
-既然委托是一个类，我们就来看一下这个类中有哪些重要的方法和字段。
-//当我们定义一个委托时 internal delegate void Feedback(Int32 value); //编译器会定义一个完整的类： internal class Feedback : System.MulticastDelegate{ //构造器 public Feedback(Object @obejct,IntPtr method); //这个方法的原型和你定义的委托一样 //当在一个委托对象后面加上括号调用的时候其实就是调用Invoke方法 public virtual void Invoke(Int32 value); //以下方法实现对回调方法的异步回调 public virtual IAsyncResult BeginInvoke(Int32 value, AsyncCallback callback, Object @object); public virtual void EndInvoke(IAsyncResult result); }  所有的委托类型都派生自MulticastDelegate，MulticastDelegate又派生自System.Delegate。MulticastDelegate有三个最重要的非公共字段。
- _target Oject类型 指出方法的对象，如果是静态方法置为null。
- _methodPtr IntPtr类型 一个内部的整数值，CLR用它标识要回调的方法。
- _invocationList Object类型 该字段通常为null。构造委托链时它引用一个委托数组。
-  </description>
+      <guid>https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/</guid>
+      <description>码几行代码 internal class Employee { public Int32 GetYearsEmployed() {...} public virtual String GetProgressReport() {...} public static Employee Lookup(String name) {...} } internal class Manager : Employee { public override string GetProgressReport() {...} }  void M3() { Employee e; Int32 year; e = new Manager(); e = Employee.Lookup(&amp;quot;joe&amp;quot;); year = e.GetYearsEmployed(); e.GetProgressReport(); }  执行过程 初始化： 启动Windows进程，加载CLR，初始化托管堆，创建一个线程并分配1M的线程栈。（如下图：左侧矩形为线程栈，顶部灰色部分加三个点表示已经执行过一些代码。右侧一大坨表示托管堆，M3方法未执行前可能会有其他对象，我们暂且不管。） 调用M3方法： 调用M3方法的时候，CLR会在托管堆上创建M3方法中所需要的类型对象。在这里我们用到Employee，Manager，Int32和String。但Int32和String是常用类型，我们假定它们已经在其他方法中创建了。 关于类型对象：
+类型对象就是运行时用来表示该类型的一个对象，这个对象包含一些静态字段。
+可以结合实例对象来理解类型对象，实例对象是我们通过调用构造函数创建的对象，类型对象则是CLR自动调用静态构造函数创建的对象（换句话说，我们平时写的静态构造函数就是用来构造这个类型对象的），在一个托管堆中每个类型只有唯一一个类型对象。
+ 类型对象指针。每个托管堆上的对象都有的东西。
+实例对象的类型对象指针会指到它对应的类型对象上。
+类型对象的类型对象指针会指到System.Type类型对象上（这是一个特殊的类型对象，Type类型对象的类型对象指针会指向本身）。
+System.Object的GetType方法就是返回存储在指定对象的类型对象指针中的地址。
+ 同步块索引。也是每个托管堆上的对象都有的东西。</description>
     </item>
     
     <item>
       <title>垃圾回收器</title>
       <link>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</link>
-      <pubDate>Wed, 25 May 2016 11:11:42 +0800</pubDate>
+      <pubDate>Tue, 13 Dec 2016 11:11:42 +0800</pubDate>
       
       <guid>https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</guid>
       <description> 找到存活的对象 引用计数 这是一种简单但速度很慢的垃圾回收技术。该技术常被用来说明垃圾收集的工作方式，看过介绍Java，JavaScript，.NET中垃圾回收器的实现都提到这个东西。
@@ -131,6 +116,21 @@ Boolean lockTaken = false; try { Monitor.Enter(s_lock, ref lockTaken); if (uniqu
  根据对第0代的预算容量，如果分配一个新对象造成第0代超过预算，就必须启动一次垃圾回收。垃圾回收后，没有被清理掉的对象升级为第1代，第0代的空间现在是空的。
  继续在第0代为新的对象分配内存，如果第0代又超出预算，再启动一次垃圾回收。这时，如果第1代没有超出预算就只对第0代进行回收，跟上述一样。如果第1代也超出了预算，垃圾回收器就会检查第0代还有第1代中的所有对象。第1代被回收后存活下来的对象就会升级为第2代，第0代中存活的对象升级为第1代，第0代空间为空。
  如果一次垃圾回收后，没有回收到足够的内存，会再执行一次完整的回收。如果还是不够，就会抛出OutOfMemoryException异常。
+  </description>
+    </item>
+    
+    <item>
+      <title>CSharp中的委托</title>
+      <link>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</link>
+      <pubDate>Thu, 26 May 2016 09:33:54 +0800</pubDate>
+      
+      <guid>https://agchen28.github.io/blog/csharp%E4%B8%AD%E7%9A%84%E5%A7%94%E6%89%98/</guid>
+      <description>委托也是C#中的一种类型，只不过它比其他类型来得特殊一点，该类型的实例就是方法的包装器。也就是说，我们可以把一个方法塞到一个委托对象里面，然后通过使用这个对象来使用塞到里面的方法。
+既然委托是一个类，我们就来看一下这个类中有哪些重要的方法和字段。
+//当我们定义一个委托时 internal delegate void Feedback(Int32 value); //编译器会定义一个完整的类： internal class Feedback : System.MulticastDelegate{ //构造器 public Feedback(Object @obejct,IntPtr method); //这个方法的原型和你定义的委托一样 //当在一个委托对象后面加上括号调用的时候其实就是调用Invoke方法 public virtual void Invoke(Int32 value); //以下方法实现对回调方法的异步回调 public virtual IAsyncResult BeginInvoke(Int32 value, AsyncCallback callback, Object @object); public virtual void EndInvoke(IAsyncResult result); }  所有的委托类型都派生自MulticastDelegate，MulticastDelegate又派生自System.Delegate。MulticastDelegate有三个最重要的非公共字段。
+ _target Oject类型 指出方法的对象，如果是静态方法置为null。
+ _methodPtr IntPtr类型 一个内部的整数值，CLR用它标识要回调的方法。
+ _invocationList Object类型 该字段通常为null。构造委托链时它引用一个委托数组。
   </description>
     </item>
     

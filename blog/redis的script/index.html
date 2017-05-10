@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="generator" content="Hugo 0.20.6" />
+
+
+
+<link rel="canonical" href="https://agchen28.github.io/blog/redis%E7%9A%84script/">
+
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_dark.min.css">
+    <title>Redis的Script - agchen</title>
+    
+<meta name="description" content="EVAL Redis 2.6.0开始，通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。EVAL script numkeys key [key ...] arg [arg ...]   script 参数是一段 Lua 5.1 脚本程序，它会被运行在 Redis 服务器上下文中。 numkeys 参数用于指定键名参数的个数。 key [key &amp;hellip;] 表示键名参数，从 EVAL 的第三个参数开始算起，表示在脚本中所用到的那些 Redis 键，这些键名参数可以在 Lua 中通过全局变量 KEYS 数组，用 1 为基址的形式访问(如： KEYS[1] ， KEYS[2] )。 arg [arg &amp;hellip;] 是附加参数，可以在 Lua 中通过全局变量 ARGV 数组访问。  &amp;gt; eval &amp;quot;return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}&amp;quot; 2 key1 key2 first second 1) &amp;quot;key1&amp;quot; 2) &amp;quot;key2&amp;quot; 3) &amp;quot;first&amp;quot; 4) &amp;quot;second&amp;quot;  在 Lua 脚本中，可以使用两个不同函数来执行 Redis 命令：">
+
+<meta property="og:title" content="Redis的Script - agchen">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://agchen28.github.io/blog/redis%E7%9A%84script/">
+<meta property="og:image" content="https://agchen28.github.io/images/default.png">
+<meta property="og:site_name" content="agchen">
+<meta property="og:description" content="EVAL Redis 2.6.0开始，通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。EVAL script numkeys key [key ...] arg [arg ...]   script 参数是一段 Lua 5.1 脚本程序，它会被运行在 Redis 服务器上下文中。 numkeys 参数用于指定键名参数的个数。 key [key &amp;hellip;] 表示键名参数，从 EVAL 的第三个参数开始算起，表示在脚本中所用到的那些 Redis 键，这些键名参数可以在 Lua 中通过全局变量 KEYS 数组，用 1 为基址的形式访问(如： KEYS[1] ， KEYS[2] )。 arg [arg &amp;hellip;] 是附加参数，可以在 Lua 中通过全局变量 ARGV 数组访问。  &amp;gt; eval &amp;quot;return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}&amp;quot; 2 key1 key2 first second 1) &amp;quot;key1&amp;quot; 2) &amp;quot;key2&amp;quot; 3) &amp;quot;first&amp;quot; 4) &amp;quot;second&amp;quot;  在 Lua 脚本中，可以使用两个不同函数来执行 Redis 命令：">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="agchen">
+<meta name="twitter:url" content="https://agchen28.github.io/blog/redis%E7%9A%84script/">
+<meta name="twitter:title" content="Redis的Script - agchen">
+<meta name="twitter:description" content="EVAL Redis 2.6.0开始，通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。EVAL script numkeys key [key ...] arg [arg ...]   script 参数是一段 Lua 5.1 脚本程序，它会被运行在 Redis 服务器上下文中。 numkeys 参数用于指定键名参数的个数。 key [key &amp;hellip;] 表示键名参数，从 EVAL 的第三个参数开始算起，表示在脚本中所用到的那些 Redis 键，这些键名参数可以在 Lua 中通过全局变量 KEYS 数组，用 1 为基址的形式访问(如： KEYS[1] ， KEYS[2] )。 arg [arg &amp;hellip;] 是附加参数，可以在 Lua 中通过全局变量 ARGV 数组访问。  &amp;gt; eval &amp;quot;return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}&amp;quot; 2 key1 key2 first second 1) &amp;quot;key1&amp;quot; 2) &amp;quot;key2&amp;quot; 3) &amp;quot;first&amp;quot; 4) &amp;quot;second&amp;quot;  在 Lua 脚本中，可以使用两个不同函数来执行 Redis 命令：">
+<meta name="twitter:image" content="https://agchen28.github.io/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://agchen28.github.io/"
+    },
+    "headline": "Redis的Script - agchen",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://agchen28.github.io/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2016-09-09T23:28:44JST",
+    "dateModified": "2016-09-09T23:28:44JST",
+    "author": {
+      "@type": "Person",
+      "name": "agchen"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "agchen",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://agchen28.github.io/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "EVAL Redis 2.6.0开始，通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。
+EVAL script numkeys key [key ...] arg [arg ...]   script 参数是一段 Lua 5.1 脚本程序，它会被运行在 Redis 服务器上下文中。
+ numkeys 参数用于指定键名参数的个数。
+ key [key &hellip;] 表示键名参数，从 EVAL 的第三个参数开始算起，表示在脚本中所用到的那些 Redis 键，这些键名参数可以在 Lua 中通过全局变量 KEYS 数组，用 1 为基址的形式访问(如： KEYS[1] ， KEYS[2] )。
+ arg [arg &hellip;] 是附加参数，可以在 Lua 中通过全局变量 ARGV 数组访问。
+  &gt; eval &quot;return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}&quot; 2 key1 key2 first second 1) &quot;key1&quot; 2) &quot;key2&quot; 3) &quot;first&quot; 4) &quot;second&quot;  在 Lua 脚本中，可以使用两个不同函数来执行 Redis 命令："
+  }
+</script>
+
+
+    <link href="https://agchen28.github.io/css/styles.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <nav class="navbar navbar-default">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            
+          </div>
+
+          
+          <div id="navbar" class="collapse navbar-collapse">
+            
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">首页</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8A%80%E6%9C%AF%E7%9B%B8%E5%85%B3/">技术相关</a></li>
+              
+              
+              
+              <li><a href="/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/">捡垃圾</a></li>
+              
+              
+              
+              <li><a href="/about">关于</a></li>
+              
+              
+            </ul>
+            
+          </div>
+          
+
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        
+<div class="row">
+  <div class="col-md-8">
+
+    <nav class="p-crumb">
+      <ol class="breadcrumb">
+        <li><a href="https://agchen28.github.io/"><i class="fa fa-home" aria-hidden="true"></i></a></li>
+        
+        <li class="active">Redis的Script</li>
+      </ol>
+    </nav>
+
+    <article class="single">
+  <header>
+    <ul class="p-facts">
+      <li><i class="fa fa-calendar" aria-hidden="true"></i><time datetime="2016-09-09T23:28:44JST">2016年09月09日</time></li>
+      
+      
+    </ul>
+
+    <h1 class="title">Redis的Script</h1>
+  </header>
+
+  
+
+  <div class="article-body">
+
+<h3 id="eval">EVAL</h3>
+
+<p>Redis 2.6.0开始，通过内置的Lua解释器，可以使用EVAL命令对Lua脚本进行求值。</p>
+
+<pre><code>EVAL script numkeys key [key ...] arg [arg ...]
+</code></pre>
+
+<ul>
+<li><p>script 参数是一段 Lua 5.1 脚本程序，它会被运行在 Redis 服务器上下文中。</p></li>
+
+<li><p>numkeys 参数用于指定键名参数的个数。</p></li>
+
+<li><p>key [key &hellip;] 表示键名参数，从 EVAL 的第三个参数开始算起，表示在脚本中所用到的那些 Redis 键，这些键名参数可以在 Lua 中通过全局变量 KEYS 数组，用 1 为基址的形式访问(如： KEYS[1] ， KEYS[2] )。</p></li>
+
+<li><p>arg [arg &hellip;] 是附加参数，可以在 Lua 中通过全局变量 ARGV 数组访问。</p></li>
+</ul>
+
+<pre><code>&gt; eval &quot;return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}&quot; 2 key1 key2 first second
+1) &quot;key1&quot;
+2) &quot;key2&quot;
+3) &quot;first&quot;
+4) &quot;second&quot;
+</code></pre>
+
+<p>在 Lua 脚本中，可以使用两个不同函数来执行 Redis 命令：</p>
+
+<ul>
+<li><p>redis.call()<br />
+在执行命令的过程中发生错误时，脚本会停止执行，并返回一个脚本错误。</p></li>
+
+<li><p>redis.pcall()<br />
+出错时不引发错误，而是返回一个带 err 域的 Lua 表。</p></li>
+</ul>
+
+<h3 id="脚本的原子性">脚本的原子性</h3>
+
+<p>Redis保证脚本会以原子性(atomic)的方式执行：当某个脚本正在运行的时候，不会有其他脚本或 Redis 命令被执行。<br />
+这也意味着，当你不得不使用一些跑得比较慢的脚本时，其他客户端会因为服务器正忙而无法执行命令。</p>
+
+<h3 id="evalsha">EVALSHA</h3>
+
+<p>EVALSHA 命令接受的第一个参数是脚本的 SHA1 校验和。我们可以乐观地使用 EVALSHA 命令，只有当服务器返回 NOSCRIPT 错误时，我们才使用 EVAL 命令，这样可以避免带宽的浪费。</p>
+</div>
+
+  
+
+</article>
+
+
+    
+  </div>
+
+  <div class="col-md-4">
+    
+<aside class="l-sidebar">
+
+  
+  
+  
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">TAG</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/tags/dotnet" class="list-group-item">dotnet</a>
+      
+      <a href="https://agchen28.github.io/tags/%E5%A4%87%E5%BF%98" class="list-group-item">备忘</a>
+      
+      <a href="https://agchen28.github.io/tags/redis" class="list-group-item">redis</a>
+      
+      <a href="https://agchen28.github.io/tags/java" class="list-group-item">java</a>
+      
+      <a href="https://agchen28.github.io/tags/javascript" class="list-group-item">javascript</a>
+      
+      <a href="https://agchen28.github.io/tags/storm" class="list-group-item">storm</a>
+      
+      <a href="https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE" class="list-group-item">捡垃圾</a>
+      
+      <a href="https://agchen28.github.io/tags/spring" class="list-group-item">spring</a>
+      
+      <a href="https://agchen28.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F" class="list-group-item">设计模式</a>
+      
+    </div>
+  </section>
+  
+  
+
+  
+  <section class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">LATESTS</div>
+    </div>
+    <div class="list-group">
+      
+      <a href="https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="list-group-item">单例模式</a>
+      
+      <a href="https://agchen28.github.io/blog/lock/" class="list-group-item">lock</a>
+      
+      <a href="https://agchen28.github.io/blog/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%9E%84%E9%80%A0/" class="list-group-item">线程同步构造</a>
+      
+      <a href="https://agchen28.github.io/blog/dotnet%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">dotnet程序执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%B9%B6%E5%8F%91%E5%9E%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/" class="list-group-item">并发型服务器的实现方式</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E4%B8%ADtopology%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/" class="list-group-item">Storm中Topology的执行过程</a>
+      
+      <a href="https://agchen28.github.io/blog/storm%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Storm集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/kafka%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Kafka集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/zookeeper%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item">Zookeeper集群搭建</a>
+      
+      <a href="https://agchen28.github.io/blog/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" class="list-group-item">垃圾回收器</a>
+      
+    </div>
+  </section>
+  
+
+</aside>
+
+
+  </div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="l-footer">
+      <div class="container">
+        <p><span class="h-logo">&copy; agchen</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_beg">Beg</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
