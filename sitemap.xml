@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>https://agchen28.github.io/blog/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
@@ -198,13 +199,13 @@
   </url>
   
   <url>
-    <loc>https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/</loc>
+    <loc>https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE/</loc>
     <lastmod>2016-11-29T22:37:30+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://agchen28.github.io/tags/%E6%8D%A1%E5%9E%83%E5%9C%BE/</loc>
+    <loc>https://agchen28.github.io/categories/%E6%8D%A1%E5%9E%83%E5%9C%BE/</loc>
     <lastmod>2016-11-29T22:37:30+08:00</lastmod>
     <priority>0</priority>
   </url>
